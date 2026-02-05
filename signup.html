@@ -8,33 +8,35 @@ import {
   AlertCircle, 
   Loader2,
   LogOut,
-  ChevronRight
+  ChevronRight,
+  Info
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-/**
- * Note: You will need to replace these with your actual Supabase credentials
- * or ensure they are available in your environment.
- */
-const SUPABASE_URL = "https://your-project-url.supabase.co";
+// --- CONFIGURATION ---
+// Replace these with your actual Supabase project details
+const SUPABASE_URL = "https://your-project.id.supabase.co";
 const SUPABASE_ANON_KEY = "your-anon-key";
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-export default function BookingApp() {
+export default function BookingSystem() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [activeEvent, setActiveEvent] = useState(null);
   const [slots, setSlots] = useState([]);
   const [userBooking, setUserBooking] = useState(null);
   const [error, setError] = useState(null);
-  const [processing, setProcessing] = useState(false);
+  const [processingId, setProcessingId] = useState(null);
 
   useEffect(() => {
-    // 1. Check Auth State
+    // Check initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
-      fetchInitialData(session?.user?.id);
+      if (session?.user) fetchInitialData(session.user.id);
+      else fetchInitialData(null);
     });
 
+    // Listen for auth changes
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       fetchInitialData(session?.user?.id);
@@ -47,17 +49,24 @@ export default function BookingApp() {
     setLoading(true);
     setError(null);
     try {
-      // 2. Fetch the Active Event
+      // 1. Fetch the event that is currently marked as ACTIVE
       const { data: eventData, error: eventError } = await supabase
         .from('events')
         .select('*')
         .eq('is_active', true)
-        .single();
+        .maybeSingle();
 
-      if (eventError) throw new Error("No active event found.");
+      if (eventError) throw eventError;
+      
+      if (!eventData) {
+        setActiveEvent(null);
+        setSlots([]);
+        return;
+      }
+
       setActiveEvent(eventData);
 
-      // 3. Fetch Slots for this Event
+      // 2. Fetch all slots for this specific event
       const { data: slotData, error: slotError } = await supabase
         .from('time_slots')
         .select('*')
@@ -67,13 +76,24 @@ export default function BookingApp() {
       if (slotError) throw slotError;
       setSlots(slotData);
 
-      // 4. Check if current user already has a booking anywhere
+      // 3. Logic to prevent multiple bookings:
+      // Check if this user has a booking in ANY slot (for this event or others)
       if (userId) {
-        const existingBooking = slotData.find(s => s.user_id === userId);
+        const { data: existingBooking, error: bookingError } = await supabase
+          .from('time_slots')
+          .select('*')
+          .eq('user_id', userId)
+          .maybeSingle();
+        
+        if (bookingError) console.error("Booking check error:", bookingError);
         setUserBooking(existingBooking);
+      } else {
+        setUserBooking(null);
       }
+
     } catch (err) {
-      setError(err.message);
+      console.error(err);
+      setError("Failed to load booking data. Please check your connection.");
     } finally {
       setLoading(false);
     }
@@ -81,172 +101,232 @@ export default function BookingApp() {
 
   async function handleBookSlot(slotId) {
     if (!user) {
-      setError("Please log in to book a spot.");
+      setError("You must be logged in to book a spot.");
       return;
     }
 
     if (userBooking) {
-      setError("You have already booked a spot for this event.");
+      setError("You have already booked a spot. You cannot book two spots.");
       return;
     }
 
-    setProcessing(true);
+    setProcessingId(slotId);
+    setError(null);
+
     try {
-      // Update the slot with the user's ID
+      // Atomic update: only update if user_id is still null
       const { error: updateError } = await supabase
         .from('time_slots')
         .update({ user_id: user.id })
         .eq('id', slotId)
-        .is('user_id', null); // Safety check: only update if still empty
+        .is('user_id', null);
 
       if (updateError) throw updateError;
 
-      // Refresh data
+      // Refresh data to show the new booking
       await fetchInitialData(user.id);
     } catch (err) {
-      setError("Could not complete booking. The slot may have just been taken.");
+      setError("This spot was just taken by someone else. Please try another.");
     } finally {
-      setProcessing(false);
+      setProcessingId(null);
     }
   }
 
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50">
-        <Loader2 className="w-12 h-12 text-blue-600 animate-spin mb-4" />
-        <p className="text-slate-600 font-medium">Loading event details...</p>
+        <motion.div 
+          animate={{ rotate: 360 }} 
+          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+        >
+          <Loader2 className="w-10 h-10 text-indigo-600" />
+        </motion.div>
+        <p className="mt-4 text-slate-500 font-medium animate-pulse">Syncing with database...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-12">
-      {/* Header */}
-      <nav className="bg-white border-b border-slate-200 px-6 py-4 mb-8">
-        <div className="max-w-4xl mx-auto flex justify-between items-center">
-          <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <Calendar className="text-blue-600" /> Event Booking
-          </h1>
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
+      {/* Navigation */}
+      <nav className="bg-white border-b border-slate-200 sticky top-0 z-10">
+        <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="bg-indigo-600 p-1.5 rounded-lg">
+              <Calendar className="text-white w-5 h-5" />
+            </div>
+            <span className="font-bold text-lg tracking-tight">EventBook</span>
+          </div>
+          
           {user ? (
             <div className="flex items-center gap-4">
-              <span className="text-sm text-slate-600 hidden sm:inline">{user.email}</span>
+              <div className="hidden sm:block text-right">
+                <p className="text-xs text-slate-500 font-medium">Logged in as</p>
+                <p className="text-sm font-semibold text-slate-700">{user.email}</p>
+              </div>
               <button 
                 onClick={() => supabase.auth.signOut()}
-                className="text-sm font-medium text-red-600 hover:text-red-700 flex items-center gap-1"
+                className="p-2 hover:bg-red-50 text-slate-400 hover:text-red-600 rounded-full transition-colors"
+                title="Logout"
               >
-                <LogOut size={16} /> Logout
+                <LogOut size={20} />
               </button>
             </div>
           ) : (
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors">
+            <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-full text-sm font-bold transition-all shadow-sm">
               Sign In
             </button>
           )}
         </div>
       </nav>
 
-      <main className="max-w-4xl mx-auto px-6">
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3 text-red-700">
-            <AlertCircle className="shrink-0 mt-0.5" size={18} />
-            <p className="text-sm">{error}</p>
-          </div>
-        )}
+      <main className="max-w-5xl mx-auto px-4 py-8">
+        <AnimatePresence>
+          {error && (
+            <motion.div 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3 text-red-800 shadow-sm"
+            >
+              <AlertCircle className="shrink-0" size={20} />
+              <p className="text-sm font-medium">{error}</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        {/* Event Card */}
-        {activeEvent && (
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
-            <div className="bg-blue-600 px-6 py-8 text-white">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h2 className="text-3xl font-bold mb-2">{activeEvent.name}</h2>
-                  <div className="flex items-center gap-4 opacity-90">
-                    <span className="flex items-center gap-1.5">
-                      <Calendar size={18} /> {new Date(activeEvent.date).toLocaleDateString(undefined, { dateStyle: 'full' })}
+        {!activeEvent ? (
+          <div className="bg-white rounded-3xl p-12 text-center border border-slate-200 shadow-sm">
+            <div className="bg-slate-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Info className="text-slate-400" size={32} />
+            </div>
+            <h2 className="text-2xl font-bold text-slate-800">No Active Events</h2>
+            <p className="text-slate-500 mt-2">Check back later for new booking opportunities.</p>
+          </div>
+        ) : (
+          <div className="space-y-8">
+            {/* Event Hero Section */}
+            <section className="relative overflow-hidden bg-indigo-900 rounded-3xl text-white p-8 md:p-12 shadow-xl">
+              <div className="relative z-10 md:flex justify-between items-end">
+                <div className="max-w-2xl">
+                  <div className="inline-flex items-center gap-2 bg-indigo-500/30 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
+                    <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                    Now Booking
+                  </div>
+                  <h1 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
+                    {activeEvent.name}
+                  </h1>
+                  <p className="text-indigo-100 text-lg opacity-90 leading-relaxed">
+                    {activeEvent.description}
+                  </p>
+                </div>
+                <div className="mt-8 md:mt-0 flex flex-col items-start md:items-end gap-2">
+                  <div className="flex items-center gap-2 text-indigo-200">
+                    <Calendar size={20} />
+                    <span className="font-semibold">
+                      {new Date(activeEvent.date).toLocaleDateString(undefined, { dateStyle: 'full' })}
                     </span>
                   </div>
                 </div>
-                <div className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
-                  Active Event
-                </div>
               </div>
-            </div>
-            <div className="p-6">
-              <p className="text-slate-600 leading-relaxed">
-                {activeEvent.description || "No description provided for this event."}
-              </p>
-            </div>
-          </div>
-        )}
+              {/* Decorative background circle */}
+              <div className="absolute -top-24 -right-24 w-64 h-64 bg-indigo-500 rounded-full opacity-20 blur-3xl" />
+            </section>
 
-        {/* Booking Status for User */}
-        {userBooking && (
-          <div className="mb-8 p-6 bg-green-50 border border-green-200 rounded-2xl flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="bg-green-100 p-3 rounded-full">
-                <CheckCircle2 className="text-green-600" size={24} />
-              </div>
-              <div>
-                <h3 className="font-bold text-green-900">You are booked!</h3>
-                <p className="text-green-700 text-sm">
-                  Your slot: {userBooking.start_time.slice(0, 5)} - {userBooking.end_time.slice(0, 5)}
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Slots Grid */}
-        <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-          <Clock size={20} className="text-slate-400" /> Available Time Slots
-        </h3>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {slots.map((slot) => {
-            const isTaken = !!slot.user_id;
-            const isMine = user && slot.user_id === user.id;
-            
-            return (
-              <div 
-                key={slot.id}
-                className={`
-                  relative p-4 rounded-xl border transition-all duration-200
-                  ${isMine 
-                    ? 'bg-blue-50 border-blue-200 ring-2 ring-blue-500 ring-offset-2' 
-                    : isTaken 
-                      ? 'bg-slate-100 border-slate-200 opacity-60' 
-                      : 'bg-white border-slate-200 hover:border-blue-400 hover:shadow-md cursor-pointer'}
-                `}
-                onClick={() => !isTaken && !userBooking && handleBookSlot(slot.id)}
+            {/* User's Current Booking Alert */}
+            {userBooking && (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-emerald-50 border border-emerald-100 p-6 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4"
               >
-                <div className="flex justify-between items-center mb-2">
-                  <span className={`text-sm font-bold ${isMine ? 'text-blue-700' : 'text-slate-900'}`}>
-                    {slot.start_time.slice(0, 5)} - {slot.end_time.slice(0, 5)}
-                  </span>
-                  {isMine && <CheckCircle2 size={16} className="text-blue-600" />}
-                </div>
-
-                <div className="flex items-center gap-2">
-                  {isTaken ? (
-                    <span className="text-xs font-medium text-slate-500 flex items-center gap-1">
-                      <User size={12} /> {isMine ? "Your Spot" : "Occupied"}
-                    </span>
-                  ) : (
-                    <span className="text-xs font-medium text-blue-600 flex items-center gap-1">
-                      Available <ChevronRight size={12} />
-                    </span>
-                  )}
-                </div>
-
-                {processing && !isTaken && (
-                  <div className="absolute inset-0 bg-white/50 flex items-center justify-center rounded-xl">
-                    <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
+                <div className="flex items-center gap-4 text-center sm:text-left">
+                  <div className="bg-emerald-500 p-3 rounded-2xl shadow-lg shadow-emerald-200">
+                    <CheckCircle2 className="text-white" size={28} />
                   </div>
-                )}
+                  <div>
+                    <h3 className="text-emerald-900 font-bold text-lg">Your spot is secured!</h3>
+                    <p className="text-emerald-700">
+                      You are booked for <span className="font-bold">{userBooking.start_time.slice(0,5)} - {userBooking.end_time.slice(0,5)}</span>
+                    </p>
+                  </div>
+                </div>
+                <button className="text-sm font-bold text-emerald-700 hover:underline">
+                  Add to Calendar
+                </button>
+              </motion.div>
+            )}
+
+            {/* Time Slots Grid */}
+            <section>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold flex items-center gap-2">
+                  <Clock className="text-indigo-600" size={22} />
+                  Available Time Slots
+                </h2>
+                <span className="text-sm text-slate-500 font-medium">
+                  {slots.filter(s => !s.user_id).length} spots remaining
+                </span>
               </div>
-            );
-          })}
-        </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {slots.map((slot) => {
+                  const isTaken = !!slot.user_id;
+                  const isMine = user && slot.user_id === user.id;
+                  const canBook = !isTaken && !userBooking;
+                  
+                  return (
+                    <motion.div
+                      key={slot.id}
+                      whileHover={canBook ? { y: -4 } : {}}
+                      className={`
+                        relative p-5 rounded-2xl border transition-all
+                        ${isMine 
+                          ? 'bg-indigo-50 border-indigo-200 ring-2 ring-indigo-500 shadow-md' 
+                          : isTaken 
+                            ? 'bg-slate-100 border-slate-200 opacity-60 cursor-not-allowed' 
+                            : 'bg-white border-slate-200 hover:border-indigo-400 hover:shadow-xl cursor-pointer'}
+                      `}
+                      onClick={() => canBook && handleBookSlot(slot.id)}
+                    >
+                      <div className="flex justify-between items-start mb-4">
+                        <div className={`
+                          px-3 py-1 rounded-lg font-mono font-bold text-sm
+                          ${isMine ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700'}
+                        `}>
+                          {slot.start_time.slice(0, 5)} - {slot.end_time.slice(0, 5)}
+                        </div>
+                        {isMine && (
+                          <span className="bg-indigo-600 text-white text-[10px] font-black uppercase px-2 py-0.5 rounded-md">
+                            Your Spot
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className={`w-2 h-2 rounded-full ${isTaken ? 'bg-slate-400' : 'bg-green-500'}`} />
+                          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                            {isTaken ? (isMine ? "Confirmed" : "Unavailable") : "Available"}
+                          </span>
+                        </div>
+                        {!isTaken && !userBooking && (
+                          <ChevronRight size={18} className="text-indigo-400" />
+                        )}
+                      </div>
+
+                      {processingId === slot.id && (
+                        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center rounded-2xl">
+                          <Loader2 className="w-6 h-6 text-indigo-600 animate-spin" />
+                        </div>
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </section>
+          </div>
+        )}
       </main>
     </div>
   );
