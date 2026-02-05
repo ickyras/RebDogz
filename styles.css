@@ -29,7 +29,6 @@ body {
     height: auto;
 }
 
-/* Steel-bar style buttons */
 .nav-button {
     padding: 0.6rem 1.4rem;
     color: #ffffff;
@@ -46,10 +45,6 @@ body {
     box-shadow:
         inset 0 1px 1px rgba(255,255,255,0.4),
         0 3px 5px rgba(0,0,0,0.5);
-}
-
-.nav-button:hover {
-    filter: brightness(1.1);
 }
 
 /* ---------- BRAND HEADER ---------- */
@@ -86,7 +81,6 @@ h2 {
     margin: 2rem 0 1.5rem;
 }
 
-/* Do NOT change size — just reuse style */
 .date-title {
     margin-top: 0;
 }
@@ -124,22 +118,18 @@ h2 {
     flex: 1;
 }
 
-/* "From" lines — unchanged */
 .column-heading {
     font-family: 'Black Ops One', Arial, sans-serif;
     font-size: 1.4rem;
     margin-bottom: 0.75rem;
 }
 
-/* Everything BELOW "From" lines */
-.section-style {
-    font-family: 'Black Ops One', Arial, sans-serif;
-    font-size: 2rem;
-}
+/* ---------- MIDDLE SECTION (NEW) ---------- */
 
-/* Location header uses same style */
-.location-heading {
-    margin-top: 1.5rem;
+.middle-section {
+    margin-top: 3rem;
+    font-family: 'Black Ops One', Arial, sans-serif;
+    font-size: 1.4rem; /* EXACTLY matches "From..." */
 }
 
 /* ---------- LINKS ---------- */
