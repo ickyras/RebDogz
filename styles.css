@@ -24,13 +24,26 @@ header img {
     margin-bottom: 1rem;
 }
 
-/* Brand ransom image */
+/* ---------- BRAND HEADER (STACKED IMAGES) ---------- */
+
+.brand-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0.5rem auto 1.5rem;
+}
+
+/* Enlarged title images */
 .brand-header-image {
-    max-width: 1000px;
-    width: 95%;
+    width: 100%;
+    max-width: 1200px; /* ~2x previous perceived size */
     height: auto;
-    margin: 0.5rem auto 1rem;
     display: block;
+}
+
+/* Slight tightening between the two words */
+.brand-header-image:first-child {
+    margin-bottom: -10px;
 }
 
 /* ---------- SUBHEAD ---------- */
@@ -89,7 +102,7 @@ footer {
 
 @media (max-width: 600px) {
     .brand-header-image {
-        width: 100%;
+        max-width: 100%;
     }
 
     h2 {
