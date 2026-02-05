@@ -73,6 +73,12 @@ h2 {
     margin: 2.5rem 0 1.5rem;
 }
 
+.column-heading {
+    font-family: 'Black Ops One', Arial, sans-serif;
+    font-size: 1.4rem;
+    margin-bottom: 0.75rem;
+}
+
 /* ---------- MAIN IMAGE ---------- */
 
 .main-image {
@@ -111,6 +117,21 @@ h2 {
 .column {
     flex: 1;
 }
+
+/* ---------- LOCATION BLOCK ---------- */
+
+.location-block {
+    margin-top: 2.5rem;
+    text-align: center;
+}
+
+.location-heading {
+    font-family: 'Black Ops One', Arial, sans-serif;
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+}
+
+/* ---------- LINKS ---------- */
 
 .inline-link {
     color: #ffffff;
