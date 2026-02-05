@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sign Up – Rebellion Dogz</title>
+    <title>Open Mic Sign Up – Rebellion Dogz</title>
 
-    <!-- Site styles (unchanged) -->
+    <!-- Site styles -->
     <link rel="stylesheet" href="styles.css" />
     <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 
@@ -26,10 +26,8 @@
 <section class="event-info event-font">
     <h1 class="section-title">Open Mic Sign Up</h1>
 
-    <!-- LOGIN STATUS -->
     <p id="authStatus"></p>
 
-    <!-- TIME SLOTS -->
     <form id="signupForm">
         <div id="slots"></div>
 
@@ -57,14 +55,21 @@ const supabase = supabase.createClient(
 );
 
 /* ===============================
-   LOAD SIGNUP DATA
+   CONSTANTS (MATCH YOUR DATA)
+   =============================== */
+
+// ✅ This MUST match your time_slots.event_id
+const EVENT_ID = 1;
+
+/* ===============================
+   LOAD AVAILABLE SLOTS
    =============================== */
 
 async function loadSignup() {
     const status = document.getElementById('authStatus');
     const slotsDiv = document.getElementById('slots');
 
-    // 1. Get logged-in user
+    // Check auth
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
@@ -74,38 +79,28 @@ async function loadSignup() {
 
     status.textContent = `Signed in as ${user.email}`;
 
-    // 2. Get open event
-    const { data: event, error: eventError } = await supabase
-        .from('events')
-        .select('*')
-        .eq('signup_open', true)
-        .single();
-
-    if (eventError || !event) {
-        slotsDiv.textContent = 'No open event at this time.';
-        return;
-    }
-
-    // 3. Get available time slots
-    const { data: slots, error: slotsError } = await supabase
+    // Fetch available slots (THIS MATCHES YOUR TABLE)
+    const { data: slots, error } = await supabase
         .from('time_slots')
         .select('id, starts_at, ends_at')
-        .eq('event_id', event.id)
+        .eq('event_id', EVENT_ID)
         .is('booked_by', null)
         .order('starts_at');
 
-    if (slotsError) {
+    if (error) {
+        console.error(error);
         slotsDiv.textContent = 'Error loading time slots.';
         return;
     }
 
-    if (slots.length === 0) {
-        slotsDiv.textContent = 'All slots are currently booked.';
+    if (!slots || slots.length === 0) {
+        slotsDiv.textContent = 'No available slots.';
         return;
     }
 
-    // 4. Render slots
+    // Render slots
     slotsDiv.innerHTML = '';
+
     slots.forEach(slot => {
         const label = document.createElement('label');
         label.style.display = 'block';
@@ -118,9 +113,9 @@ async function loadSignup() {
         input.required = true;
 
         const start = new Date(slot.starts_at)
-            .toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            .toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
         const end = new Date(slot.ends_at)
-            .toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            .toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 
         label.appendChild(input);
         label.append(` ${start} – ${end}`);
@@ -152,7 +147,7 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
         email: user.email
     });
 
-    // Book slot
+    // Book the slot (RLS enforces safety)
     const { error } = await supabase
         .from('time_slots')
         .update({ booked_by: user.id })
@@ -160,6 +155,7 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
         .is('booked_by', null);
 
     if (error) {
+        console.error(error);
         message.textContent = 'That slot was just taken. Please refresh.';
         return;
     }
@@ -167,7 +163,7 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
     message.textContent = '✅ Slot booked successfully!';
     document.getElementById('signupForm').reset();
 
-    // Reload slots
+    // Reload available slots
     loadSignup();
 });
 
