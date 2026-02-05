@@ -66,25 +66,6 @@ body {
     margin-bottom: -12px;
 }
 
-/* ---------- HEADINGS ---------- */
-
-h2 {
-    font-family: 'Black Ops One', Arial, sans-serif;
-    color: #000000;
-    letter-spacing: 2px;
-}
-
-.section-title {
-    font-family: 'Black Ops One', Arial, sans-serif;
-    font-size: 2rem;
-    text-align: center;
-    margin: 2rem 0 1.5rem;
-}
-
-.date-title {
-    margin-top: 0;
-}
-
 /* ---------- MAIN IMAGE ---------- */
 
 .main-image {
@@ -97,16 +78,31 @@ h2 {
     border: 3px solid #ffffff;
 }
 
-/* ---------- EVENT INFO ---------- */
+/* ---------- EVENT FONT SYSTEM (SINGLE SOURCE OF TRUTH) ---------- */
+
+.event-font {
+    font-family: 'Black Ops One', Arial, sans-serif;
+    font-size: 2rem; /* SAME AS Schedule of Events */
+    text-align: center;
+}
+
+.section-title {
+    margin: 2rem 0 1.5rem;
+}
+
+/* Slightly smaller text */
+.from-text {
+    font-size: 1.6rem;
+    margin-bottom: 0.75rem;
+}
+
+/* ---------- LAYOUT ---------- */
 
 .event-info {
     max-width: 900px;
     margin: 0 auto 3rem;
     padding: 0 1rem;
-    text-align: center;
 }
-
-/* ---------- TWO COLUMNS ---------- */
 
 .two-column {
     display: flex;
@@ -118,22 +114,10 @@ h2 {
     flex: 1;
 }
 
-.column-heading {
-    font-family: 'Black Ops One', Arial, sans-serif;
-    font-size: 1.4rem;
-    margin-bottom: 0.75rem;
-}
+/* ---------- LOCATION ---------- */
 
-/* Text under "From..." — size matches heading */
-.under-from {
-    font-size: 1.4rem;
-}
-
-/* ---------- LOCATION SECTION ---------- */
-
-.middle-section {
+.location-section {
     margin-top: 3rem;
-    text-align: center;
 }
 
 /* ---------- LINKS ---------- */
@@ -147,10 +131,7 @@ h2 {
 /* ---------- FOOTER ---------- */
 
 footer {
-    text-align: center;
-    font-size: 0.8rem;
-    opacity: 0.7;
-    padding-bottom: 2rem;
+    height: 2rem;
 }
 
 /* ---------- MOBILE ---------- */
