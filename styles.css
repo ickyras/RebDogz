@@ -1,10 +1,12 @@
-/* ---------- RESET / BASE ---------- */
+/* ---------- RESET ---------- */
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
+
+/* ---------- BASE ---------- */
 
 body {
   background: #0b0b0b;
@@ -19,10 +21,10 @@ body {
 
 header {
   text-align: center;
-  padding: 2.5rem 1rem 1.5rem;
+  padding: 3rem 1rem 2rem;
 }
 
-/* Ransom-style title */
+/* Ransom-style header */
 .ransom-header {
   display: flex;
   flex-wrap: wrap;
@@ -39,10 +41,9 @@ header {
   font-size: 3rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
-/* Alternate gritty styles */
+/* Gritty variation */
 .ransom-header span:nth-child(odd) {
   background: #1a1a1a;
   font-family: 'Bebas Neue', Impact, 'Arial Black', sans-serif;
@@ -71,67 +72,49 @@ header {
 
 /* Subtitle */
 .tagline {
-  font-size: 0.95rem;
-  letter-spacing: 0.15em;
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
-/* ---------- MAIN CONTENT ---------- */
+/* ---------- HERO ---------- */
 
 main {
   display: flex;
   justify-content: center;
-  padding: 2rem 1rem;
+  padding: 2rem 1rem 3rem;
 }
 
-.card {
-  background: #141414;
-  border: 1px solid #222;
-  padding: 1.5rem;
-  max-width: 520px;
-  width: 100%;
-  border-radius: 4px;
-}
-
-.card h2 {
-  font-size: 1.25rem;
-  margin-bottom: 0.5rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.card p {
-  font-size: 0.9rem;
-  opacity: 0.8;
-  margin-bottom: 1.25rem;
-}
-
-/* Slot mockup (will be replaced with Supabase data) */
-.slots-placeholder {
-  display: grid;
-  gap: 0.5rem;
-}
-
-.slot {
-  padding: 0.75rem;
-  background: #1e1e1e;
-  border: 1px solid #333;
+.hero {
+  max-width: 560px;
   text-align: center;
-  cursor: pointer;
+}
+
+.hero-text {
+  margin-bottom: 1.25rem;
+  font-size: 1rem;
+  opacity: 0.85;
+}
+
+/* ---------- CTA ---------- */
+
+.cta-button {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.75rem;
+  background: #ffffff;
+  color: #000;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.15em;
   transition: background 0.2s, transform 0.1s;
 }
 
-.slot:hover {
-  background: #262626;
+.cta-button:hover {
+  background: #e0e0e0;
   transform: translateY(-1px);
-}
-
-.slot.booked {
-  background: #2a0f0f;
-  border-color: #552222;
-  color: #aaa;
-  cursor: not-allowed;
 }
 
 /* ---------- FOOTER ---------- */
