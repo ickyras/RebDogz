@@ -8,94 +8,120 @@ body {
     background-color: #5b5fd6;
     color: #ffffff;
     font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ---------- HEADER / NAV ---------- */
+
+.site-header {
+    padding: 1.5rem 1rem 1rem;
     text-align: center;
 }
 
-/* ---------- HEADER ---------- */
-
-header {
-    padding: 2rem 1rem 1rem;
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
 }
 
-header img {
-    max-width: 220px;
-    width: 100%;
+.logo {
+    max-width: 120px;
     height: auto;
-    margin-bottom: 1rem;
 }
 
-/* ---------- BRAND HEADER (STACKED, MATCHED HEIGHT) ---------- */
+.nav a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    margin-right: 1rem;
+}
+
+.nav a:hover {
+    text-decoration: underline;
+}
+
+/* ---------- BRAND HEADER ---------- */
 
 .brand-header {
+    margin: 1.5rem auto 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0.5rem auto 1.5rem;
 }
 
-/*
-  Single source of truth for title height.
-  Both images are forced to this height.
-*/
 .brand-header-image {
-    height: 220px;          /* adjust once, both stay equal */
+    height: 220px;
     width: auto;
     max-width: 95%;
-    display: block;
 }
 
-/* Tighten vertical spacing slightly */
 .brand-header-image:first-child {
     margin-bottom: -12px;
 }
 
-/* ---------- SUBHEAD ---------- */
+/* ---------- HEADINGS ---------- */
 
 h2 {
     font-family: 'Black Ops One', Arial, sans-serif;
-    font-size: 1.5rem;
-    margin-bottom: 2rem;
-    letter-spacing: 2px;
     color: #000000;
+    letter-spacing: 2px;
+}
+
+.section-title {
+    font-family: 'Black Ops One', Arial, sans-serif;
+    font-size: 2rem;
+    text-align: center;
+    margin: 2.5rem 0 1.5rem;
 }
 
 /* ---------- MAIN IMAGE ---------- */
 
 .main-image {
     max-width: 900px;
-    width: 90%;
-    margin: 0 auto 2.5rem;
+    margin: 0 auto 2rem;
 }
 
 .main-image img {
     width: 100%;
-    height: auto;
     border: 3px solid #ffffff;
 }
 
 /* ---------- EVENT INFO ---------- */
 
 .event-info {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto 3rem;
     padding: 0 1rem;
-}
-
-.event-info p {
-    margin: 0.6rem 0;
-    line-height: 1.5;
+    text-align: center;
 }
 
 .highlight {
     font-size: 1.3rem;
     font-weight: bold;
-    letter-spacing: 0.5px;
+}
+
+/* ---------- TWO COLUMN LAYOUT ---------- */
+
+.two-column {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.column {
+    flex: 1;
+}
+
+.inline-link {
     color: #ffffff;
+    font-weight: bold;
+    text-decoration: underline;
 }
 
 /* ---------- FOOTER ---------- */
 
 footer {
+    text-align: center;
     font-size: 0.8rem;
     opacity: 0.7;
     padding-bottom: 2rem;
@@ -103,16 +129,18 @@ footer {
 
 /* ---------- MOBILE ---------- */
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
+    .header-left {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .two-column {
+        flex-direction: column;
+        text-align: center;
+    }
+
     .brand-header-image {
-        height: 150px;   /* scaled but still equal */
-    }
-
-    h2 {
-        font-size: 1.25rem;
-    }
-
-    .highlight {
-        font-size: 1.15rem;
+        height: 150px;
     }
 }
