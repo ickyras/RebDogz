@@ -1,53 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Rebellion Dogz</title>
+  <meta charset="UTF-8" />
+  <title>Rebellion Dogz</title>
 
-    <link rel="stylesheet" href="styles.css" />
+  <!-- Mobile friendly -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Gritty headline font -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+
+  <!-- Main stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-    <header>
-        <img src="images/aa_logo.png" alt="Rebellion Dogz Logo" />
-        <h1>Rebellion Dogz</h1>
-        <h2>Monthly Speaker Meeting</h2>
-    </header>
+  <!-- Ransom-style header -->
+  <header>
+    <h1 class="ransom-header">
+      <span>R</span><span>e</span><span>b</span><span>e</span><span>l</span><span>l</span><span>i</span><span>o</span><span>n</span>
+      <span class="space"></span>
+      <span>D</span><span>o</span><span>g</span><span>z</span>
+    </h1>
 
-    <div class="main-image">
-        <img src="images/rebdogz_in_studio2.png" alt="Punk rock dogs in recording studio" />
-    </div>
+    <p class="tagline">
+      Booking for events & meetings
+    </p>
+  </header>
 
-    <section class="event-info">
-        <p>Our first monthly speaker meeting will be</p>
+  <!-- Main content placeholder -->
+  <main>
+    <section class="card">
+      <h2>Upcoming Availability</h2>
+      <p>
+        Select an available time slot to book a session.
+      </p>
 
-        <p class="highlight">
-            Saturday, March 21st, 2026
-        </p>
-
-        <p class="highlight">
-            Eastpark Church<br>
-            15815 NE 18th Street<br>
-            Vancouver, WA 98684
-        </p>
-
-        <p>Our speakers for the month of March will be:</p>
-
-        <p class="highlight">
-            Short Speaker: Lauren A.<br>
-            Battle Ground, WA
-        </p>
-
-        <p class="highlight">
-            Long Speaker: Alan W.<br>
-            Battle Ground, WA
-        </p>
+      <!-- This will later be populated by Supabase -->
+      <div class="slots-placeholder">
+        <div class="slot">Example Slot</div>
+        <div class="slot">Example Slot</div>
+        <div class="slot booked">Booked</div>
+      </div>
     </section>
+  </main>
 
-    <footer>
-        © Rebellion Dogz
-    </footer>
+  <footer>
+    <p>
+      © Rebellion Dogz
+    </p>
+  </footer>
 
 </body>
 </html>
