@@ -124,12 +124,16 @@ h2 {
     margin-bottom: 0.75rem;
 }
 
-/* ---------- MIDDLE SECTION (NEW) ---------- */
+/* Text under "From..." — size matches heading */
+.under-from {
+    font-size: 1.4rem;
+}
+
+/* ---------- LOCATION SECTION ---------- */
 
 .middle-section {
     margin-top: 3rem;
-    font-family: 'Black Ops One', Arial, sans-serif;
-    font-size: 1.4rem; /* EXACTLY matches "From..." */
+    text-align: center;
 }
 
 /* ---------- LINKS ---------- */
