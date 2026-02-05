@@ -24,49 +24,13 @@ header img {
     margin-bottom: 1rem;
 }
 
-/* ---------- RANSOM HEADER ---------- */
-
-.ransom-header {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 6px;
-    margin: 0.5rem 0;
-}
-
-.ransom-header span {
-    display: inline-block;
-    padding: 8px 12px;
-    background: #ffffff;
-    color: #000000;
-    font-family: 'Black Ops One', Arial, sans-serif;
-    font-size: 3.2rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-}
-
-/* Controlled chaos */
-.ransom-header span:nth-child(odd) {
-    transform: rotate(-4deg);
-}
-
-.ransom-header span:nth-child(even) {
-    transform: rotate(5deg);
-}
-
-.ransom-header span:nth-child(3n) {
-    transform: rotate(-7deg);
-}
-
-.ransom-header span:nth-child(5n) {
-    font-size: 3.4rem;
-}
-
-/* Space between words */
-.ransom-header .space {
-    width: 16px;
-    padding: 0;
-    background: transparent;
+/* Brand ransom image */
+.brand-header-image {
+    max-width: 1000px;
+    width: 95%;
+    height: auto;
+    margin: 0.5rem auto 1rem;
+    display: block;
 }
 
 /* ---------- SUBHEAD ---------- */
@@ -124,8 +88,8 @@ footer {
 /* ---------- MOBILE ---------- */
 
 @media (max-width: 600px) {
-    .ransom-header span {
-        font-size: 2.2rem;
+    .brand-header-image {
+        width: 100%;
     }
 
     h2 {
