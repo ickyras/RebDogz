@@ -1,14 +1,253 @@
-<!-- 1. Include the Supabase Library -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+import React, { useState, useEffect } from 'react';
+import { createClient } from '@supabase/supabase-js';
+import { 
+  Calendar, 
+  Clock, 
+  User, 
+  CheckCircle2, 
+  AlertCircle, 
+  Loader2,
+  LogOut,
+  ChevronRight
+} from 'lucide-react';
 
-<script>
-  // 2. Initialize the Supabase client with your project details
-  // These values come from your Settings > API screen
-  const SUPABASE_URL = "https://pkfrmugpppbqetekagyh.supabase.co"
-  const SUPABASE_ANON_KEY = "sb_publishable_kIDCRuBpvOWGgy54L685HQ_zuFa-PLM"
+/**
+ * Note: You will need to replace these with your actual Supabase credentials
+ * or ensure they are available in your environment.
+ */
+const SUPABASE_URL = "https://your-project-url.supabase.co";
+const SUPABASE_ANON_KEY = "your-anon-key";
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+export default function BookingApp() {
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
+  const [activeEvent, setActiveEvent] = useState(null);
+  const [slots, setSlots] = useState([]);
+  const [userBooking, setUserBooking] = useState(null);
+  const [error, setError] = useState(null);
+  const [processing, setProcessing] = useState(false);
 
-  // The client is now ready to use. 
-  console.log("Supabase is connected to Rebellion Dogz!")
-</script>
+  useEffect(() => {
+    // 1. Check Auth State
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      fetchInitialData(session?.user?.id);
+    });
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      fetchInitialData(session?.user?.id);
+    });
+
+    return () => authListener.subscription.unsubscribe();
+  }, []);
+
+  async function fetchInitialData(userId) {
+    setLoading(true);
+    setError(null);
+    try {
+      // 2. Fetch the Active Event
+      const { data: eventData, error: eventError } = await supabase
+        .from('events')
+        .select('*')
+        .eq('is_active', true)
+        .single();
+
+      if (eventError) throw new Error("No active event found.");
+      setActiveEvent(eventData);
+
+      // 3. Fetch Slots for this Event
+      const { data: slotData, error: slotError } = await supabase
+        .from('time_slots')
+        .select('*')
+        .eq('event_id', eventData.id)
+        .order('start_time', { ascending: true });
+
+      if (slotError) throw slotError;
+      setSlots(slotData);
+
+      // 4. Check if current user already has a booking anywhere
+      if (userId) {
+        const existingBooking = slotData.find(s => s.user_id === userId);
+        setUserBooking(existingBooking);
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleBookSlot(slotId) {
+    if (!user) {
+      setError("Please log in to book a spot.");
+      return;
+    }
+
+    if (userBooking) {
+      setError("You have already booked a spot for this event.");
+      return;
+    }
+
+    setProcessing(true);
+    try {
+      // Update the slot with the user's ID
+      const { error: updateError } = await supabase
+        .from('time_slots')
+        .update({ user_id: user.id })
+        .eq('id', slotId)
+        .is('user_id', null); // Safety check: only update if still empty
+
+      if (updateError) throw updateError;
+
+      // Refresh data
+      await fetchInitialData(user.id);
+    } catch (err) {
+      setError("Could not complete booking. The slot may have just been taken.");
+    } finally {
+      setProcessing(false);
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50">
+        <Loader2 className="w-12 h-12 text-blue-600 animate-spin mb-4" />
+        <p className="text-slate-600 font-medium">Loading event details...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-50 pb-12">
+      {/* Header */}
+      <nav className="bg-white border-b border-slate-200 px-6 py-4 mb-8">
+        <div className="max-w-4xl mx-auto flex justify-between items-center">
+          <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+            <Calendar className="text-blue-600" /> Event Booking
+          </h1>
+          {user ? (
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-slate-600 hidden sm:inline">{user.email}</span>
+              <button 
+                onClick={() => supabase.auth.signOut()}
+                className="text-sm font-medium text-red-600 hover:text-red-700 flex items-center gap-1"
+              >
+                <LogOut size={16} /> Logout
+              </button>
+            </div>
+          ) : (
+            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors">
+              Sign In
+            </button>
+          )}
+        </div>
+      </nav>
+
+      <main className="max-w-4xl mx-auto px-6">
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3 text-red-700">
+            <AlertCircle className="shrink-0 mt-0.5" size={18} />
+            <p className="text-sm">{error}</p>
+          </div>
+        )}
+
+        {/* Event Card */}
+        {activeEvent && (
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
+            <div className="bg-blue-600 px-6 py-8 text-white">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h2 className="text-3xl font-bold mb-2">{activeEvent.name}</h2>
+                  <div className="flex items-center gap-4 opacity-90">
+                    <span className="flex items-center gap-1.5">
+                      <Calendar size={18} /> {new Date(activeEvent.date).toLocaleDateString(undefined, { dateStyle: 'full' })}
+                    </span>
+                  </div>
+                </div>
+                <div className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                  Active Event
+                </div>
+              </div>
+            </div>
+            <div className="p-6">
+              <p className="text-slate-600 leading-relaxed">
+                {activeEvent.description || "No description provided for this event."}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Booking Status for User */}
+        {userBooking && (
+          <div className="mb-8 p-6 bg-green-50 border border-green-200 rounded-2xl flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="bg-green-100 p-3 rounded-full">
+                <CheckCircle2 className="text-green-600" size={24} />
+              </div>
+              <div>
+                <h3 className="font-bold text-green-900">You are booked!</h3>
+                <p className="text-green-700 text-sm">
+                  Your slot: {userBooking.start_time.slice(0, 5)} - {userBooking.end_time.slice(0, 5)}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Slots Grid */}
+        <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+          <Clock size={20} className="text-slate-400" /> Available Time Slots
+        </h3>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {slots.map((slot) => {
+            const isTaken = !!slot.user_id;
+            const isMine = user && slot.user_id === user.id;
+            
+            return (
+              <div 
+                key={slot.id}
+                className={`
+                  relative p-4 rounded-xl border transition-all duration-200
+                  ${isMine 
+                    ? 'bg-blue-50 border-blue-200 ring-2 ring-blue-500 ring-offset-2' 
+                    : isTaken 
+                      ? 'bg-slate-100 border-slate-200 opacity-60' 
+                      : 'bg-white border-slate-200 hover:border-blue-400 hover:shadow-md cursor-pointer'}
+                `}
+                onClick={() => !isTaken && !userBooking && handleBookSlot(slot.id)}
+              >
+                <div className="flex justify-between items-center mb-2">
+                  <span className={`text-sm font-bold ${isMine ? 'text-blue-700' : 'text-slate-900'}`}>
+                    {slot.start_time.slice(0, 5)} - {slot.end_time.slice(0, 5)}
+                  </span>
+                  {isMine && <CheckCircle2 size={16} className="text-blue-600" />}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {isTaken ? (
+                    <span className="text-xs font-medium text-slate-500 flex items-center gap-1">
+                      <User size={12} /> {isMine ? "Your Spot" : "Occupied"}
+                    </span>
+                  ) : (
+                    <span className="text-xs font-medium text-blue-600 flex items-center gap-1">
+                      Available <ChevronRight size={12} />
+                    </span>
+                  )}
+                </div>
+
+                {processing && !isTaken && (
+                  <div className="absolute inset-0 bg-white/50 flex items-center justify-center rounded-xl">
+                    <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </main>
+    </div>
+  );
+}
