@@ -5,31 +5,178 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sign Up – Rebellion Dogz</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
+    <!-- Site styles (unchanged) -->
     <link rel="stylesheet" href="styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
+
+    <!-- Supabase JS -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
 <header class="site-header">
-    <div class="header-left">
+    <nav class="top-nav">
         <img src="images/aa_logo.png" alt="Rebellion Dogz Logo" class="logo" />
-        <nav class="nav">
-            <a href="index.html">Home</a>
-            <a href="signup.html">Sign Up</a>
-            <a href="contact.html">Contact</a>
-        </nav>
-    </div>
+        <a href="index.html" class="nav-button">Home</a>
+        <a href="signup.html" class="nav-button">Sign Up</a>
+        <a href="contact.html" class="nav-button">Contact</a>
+    </nav>
 </header>
 
-<h1 class="section-title">Sign Up for Open Mic</h1>
+<section class="event-info event-font">
+    <h1 class="section-title">Open Mic Sign Up</h1>
 
-<section class="event-info">
-    <p>This page will contain the sign‑up form for 5‑minute slots.</p>
+    <!-- LOGIN STATUS -->
+    <p id="authStatus"></p>
+
+    <!-- TIME SLOTS -->
+    <form id="signupForm">
+        <div id="slots"></div>
+
+        <button type="submit" class="nav-button" style="margin-top:2rem;">
+            Confirm Slot
+        </button>
+    </form>
+
+    <p id="message"></p>
 </section>
 
-<footer>
-    © Rebellion Dogz
-</footer>
+<footer></footer>
+
+<script>
+/* ===============================
+   SUPABASE CONFIG
+   =============================== */
+
+const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR_PUBLIC_ANON_KEY';
+
+const supabase = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
+
+/* ===============================
+   LOAD SIGNUP DATA
+   =============================== */
+
+async function loadSignup() {
+    const status = document.getElementById('authStatus');
+    const slotsDiv = document.getElementById('slots');
+
+    // 1. Get logged-in user
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        status.textContent = 'Please sign in to book a time slot.';
+        return;
+    }
+
+    status.textContent = `Signed in as ${user.email}`;
+
+    // 2. Get open event
+    const { data: event, error: eventError } = await supabase
+        .from('events')
+        .select('*')
+        .eq('signup_open', true)
+        .single();
+
+    if (eventError || !event) {
+        slotsDiv.textContent = 'No open event at this time.';
+        return;
+    }
+
+    // 3. Get available time slots
+    const { data: slots, error: slotsError } = await supabase
+        .from('time_slots')
+        .select('id, starts_at, ends_at')
+        .eq('event_id', event.id)
+        .is('booked_by', null)
+        .order('starts_at');
+
+    if (slotsError) {
+        slotsDiv.textContent = 'Error loading time slots.';
+        return;
+    }
+
+    if (slots.length === 0) {
+        slotsDiv.textContent = 'All slots are currently booked.';
+        return;
+    }
+
+    // 4. Render slots
+    slotsDiv.innerHTML = '';
+    slots.forEach(slot => {
+        const label = document.createElement('label');
+        label.style.display = 'block';
+        label.style.marginBottom = '0.75rem';
+
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'slot';
+        input.value = slot.id;
+        input.required = true;
+
+        const start = new Date(slot.starts_at)
+            .toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const end = new Date(slot.ends_at)
+            .toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        label.appendChild(input);
+        label.append(` ${start} – ${end}`);
+
+        slotsDiv.appendChild(label);
+    });
+}
+
+/* ===============================
+   BOOK SLOT
+   =============================== */
+
+document.getElementById('signupForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const message = document.getElementById('message');
+    const selected = document.querySelector('input[name="slot"]:checked');
+
+    if (!selected) {
+        message.textContent = 'Please select a time slot.';
+        return;
+    }
+
+    const { data: { user } } = await supabase.auth.getUser();
+
+    // Ensure profile exists
+    await supabase.from('profiles').upsert({
+        id: user.id,
+        email: user.email
+    });
+
+    // Book slot
+    const { error } = await supabase
+        .from('time_slots')
+        .update({ booked_by: user.id })
+        .eq('id', selected.value)
+        .is('booked_by', null);
+
+    if (error) {
+        message.textContent = 'That slot was just taken. Please refresh.';
+        return;
+    }
+
+    message.textContent = '✅ Slot booked successfully!';
+    document.getElementById('signupForm').reset();
+
+    // Reload slots
+    loadSignup();
+});
+
+/* ===============================
+   INIT
+   =============================== */
+
+document.addEventListener('DOMContentLoaded', loadSignup);
+</script>
 
 </body>
 </html>
