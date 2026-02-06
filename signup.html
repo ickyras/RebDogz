@@ -5,30 +5,37 @@
   <title>Sign Up – Rebellion Dogz</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Supabase JS -->
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
   <style>
     body {
       font-family: sans-serif;
-      max-width: 700px;
-      margin: 2rem auto;
-      padding: 1rem;
+      max-width: 900px;
+      margin: 0 auto;
     }
 
-    h1, h2 {
-      margin-bottom: 0.5rem;
+    nav {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem;
+      border-bottom: 1px solid #ccc;
+    }
+
+    nav a {
+      margin-right: 1rem;
+      text-decoration: none;
+      font-weight: bold;
+      color: black;
+    }
+
+    main {
+      padding: 2rem 1rem;
     }
 
     input, button {
+      width: 100%;
       padding: 0.5rem;
       margin-top: 0.5rem;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    button {
-      cursor: pointer;
     }
 
     .slot {
@@ -51,190 +58,153 @@
 
 <body>
 
-  <h1>Monthly Speaker Sign‑Up</h1>
+<nav>
+  <div><a href="/RebDogz/">Rebellion Dogz</a></div>
+  <div>
+    <a href="/RebDogz/signup.html">Sign Up</a>
+  </div>
+</nav>
 
-  <!-- AUTH -->
-  <section id="auth-section">
-    <p class="note">
-      Register once with your email.  
-      Your email is used only for confirmation and is never shown publicly.
-    </p>
+<main>
 
-    <label>
-      Display name (shown publicly)
-      <input id="displayName" />
-    </label>
+<h1>Monthly Speaker Sign‑Up</h1>
 
-    <label>
-      Email address
-      <input id="email" type="email" />
-    </label>
+<section id="auth-section">
+  <p class="note">
+    Register once with your email.  
+    Your email is used only for confirmation and is never shown publicly.
+  </p>
 
-    <button id="sendLink">Send Confirmation Link</button>
-    <p id="authMessage"></p>
-  </section>
+  <label>
+    Display name
+    <input id="displayName" />
+  </label>
 
-  <!-- SLOTS -->
-  <section id="slots-section" style="display:none;">
-    <h2>Available Time Slots</h2>
-    <p class="note">
-      You may select one time slot only.
-      Once booked, it cannot be changed online.
-    </p>
-    <div id="slots"></div>
-  </section>
+  <label>
+    Email address
+    <input id="email" type="email" />
+  </label>
 
-  <script>
-    /*************************
-     * SUPABASE CONFIG
-     *************************/
-    const SUPABASE_URL = "https://pkfrmugpppbqetekagyh.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_kIDCRuBpvOWGgy54L685HQ_zuFa-PLM";
+  <button id="sendLink">Send Confirmation Link</button>
+  <p id="authMessage"></p>
+</section>
 
-    const supabaseClient = supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
+<section id="slots-section" style="display:none;">
+  <h2>Available Time Slots</h2>
+  <p class="note">You may select one time slot only.</p>
+  <div id="slots"></div>
+</section>
 
-    const authSection = document.getElementById("auth-section");
-    const slotsSection = document.getElementById("slots-section");
-    const slotsDiv = document.getElementById("slots");
-    const authMessage = document.getElementById("authMessage");
+</main>
 
-    /*************************
-     * PST TIME FORMATTER
-     *************************/
-    function formatTimePST(ts) {
-      return new Date(ts).toLocaleTimeString("en-US", {
-        hour: "numeric",
-        minute: "2-digit",
-        timeZone: "America/Los_Angeles"
-      });
+<script>
+  const SUPABASE_URL = "https://pkfrmugpppbqetekagyh.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_kIDCRuBpvOWGgy54L685HQ_zuFa-PLM";
+
+  const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+  const authSection = document.getElementById("auth-section");
+  const slotsSection = document.getElementById("slots-section");
+  const slotsDiv = document.getElementById("slots");
+  const authMessage = document.getElementById("authMessage");
+
+  /*************************
+   * TIME FORMAT (NO TZ MATH)
+   *************************/
+  function formatLocalTime(ts) {
+    const timePart = ts.split(" ")[1].slice(0, 5); // HH:MM
+    let [hour, minute] = timePart.split(":").map(Number);
+
+    const ampm = hour >= 12 ? "PM" : "AM";
+    hour = hour % 12 || 12;
+
+    return `${hour}:${minute.toString().padStart(2, "0")} ${ampm}`;
+  }
+
+  document.getElementById("sendLink").onclick = async () => {
+    const email = email.value.trim();
+    const displayName = displayName.value.trim();
+
+    if (!email || !displayName) {
+      authMessage.textContent = "Both fields required.";
+      return;
     }
 
-    /*************************
-     * SEND MAGIC LINK
-     *************************/
-    document.getElementById("sendLink").onclick = async () => {
-      const email = document.getElementById("email").value.trim();
-      const displayName = document.getElementById("displayName").value.trim();
+    localStorage.setItem("display_name", displayName);
 
-      if (!email || !displayName) {
-        authMessage.textContent = "Both fields are required.";
-        return;
+    const { error } = await supabaseClient.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: "https://ickyras.github.io/RebDogz/signup.html"
       }
+    });
 
-      localStorage.setItem("display_name", displayName);
+    authMessage.textContent = error
+      ? error.message
+      : "Check your email to confirm.";
+  };
 
-      const { error } = await supabaseClient.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: "https://ickyras.github.io/RebDogz/signup.html"
-        }
-      });
+  async function loadSlots(user) {
+    slotsDiv.innerHTML = "";
 
-      authMessage.textContent = error
-        ? error.message
-        : "Check your email and click the confirmation link.";
-    };
+    const { data: events } = await supabaseClient
+      .from("events")
+      .select("*")
+      .eq("signup_open", true)
+      .limit(1);
 
-    /*************************
-     * ENSURE PROFILE
-     *************************/
-    async function ensureProfile(user) {
-      const displayName =
-        localStorage.getItem("display_name") || user.email;
-
-      const { data } = await supabaseClient
-        .from("profiles")
-        .select("id")
-        .eq("id", user.id)
-        .single();
-
-      if (!data) {
-        await supabaseClient.from("profiles").insert({
-          id: user.id,
-          email: user.email,
-          display_name: displayName
-        });
-      }
+    if (!events?.length) {
+      slotsDiv.textContent = "No open events.";
+      return;
     }
 
-    /*************************
-     * LOAD SLOTS
-     *************************/
-    async function loadSlots(user) {
-      slotsDiv.innerHTML = "";
+    const { data: slots } = await supabaseClient
+      .from("time_slots")
+      .select("*")
+      .eq("event_id", events[0].id)
+      .order("starts_at");
 
-      const { data: events } = await supabaseClient
-        .from("events")
-        .select("*")
-        .eq("signup_open", true)
-        .limit(1);
+    for (const slot of slots) {
+      const btn = document.createElement("button");
+      btn.className = "slot";
 
-      if (!events || events.length === 0) {
-        slotsDiv.textContent = "No open events at this time.";
-        return;
+      const start = formatLocalTime(slot.starts_at);
+      const end = formatLocalTime(slot.ends_at);
+
+      if (slot.booked_by) {
+        btn.textContent = `${start} – ${end} (Booked)`;
+        btn.disabled = true;
+        btn.classList.add("booked");
+      } else {
+        btn.textContent = `${start} – ${end}`;
+        btn.onclick = async () => {
+          await supabaseClient
+            .from("time_slots")
+            .update({ booked_by: user.id })
+            .eq("id", slot.id);
+          loadSlots(user);
+        };
       }
 
-      const eventId = events[0].id;
-
-      const { data: slots } = await supabaseClient
-        .from("time_slots")
-        .select("*")
-        .eq("event_id", eventId)
-        .order("starts_at");
-
-      for (const slot of slots) {
-        const btn = document.createElement("button");
-        btn.className = "slot";
-
-        const start = formatTimePST(slot.starts_at);
-        const end = formatTimePST(slot.ends_at);
-
-        if (slot.booked_by) {
-          btn.textContent = `${start} – ${end} (Booked)`;
-          btn.classList.add("booked");
-          btn.disabled = true;
-        } else {
-          btn.textContent = `${start} – ${end}`;
-          btn.onclick = async () => {
-            const { error } = await supabaseClient
-              .from("time_slots")
-              .update({ booked_by: user.id })
-              .eq("id", slot.id);
-
-            if (error) {
-              alert(error.message);
-            } else {
-              loadSlots(user);
-            }
-          };
-        }
-
-        slotsDiv.appendChild(btn);
-      }
+      slotsDiv.appendChild(btn);
     }
+  }
 
-    /*************************
-     * INIT
-     *************************/
-    async function init() {
-      const {
-        data: { user }
-      } = await supabaseClient.auth.getUser();
+  async function init() {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) return;
 
-      if (!user) return;
+    authSection.style.display = "none";
+    slotsSection.style.display = "block";
 
-      authSection.style.display = "none";
-      slotsSection.style.display = "block";
+    await loadSlots(user);
+  }
 
-      await ensureProfile(user);
-      await loadSlots(user);
-    }
-
-    init();
-  </script>
+  init();
+</script>
 
 </body>
 </html>
