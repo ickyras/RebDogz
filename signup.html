@@ -38,6 +38,10 @@
       margin-top: 0.5rem;
     }
 
+    button {
+      cursor: pointer;
+    }
+
     .slot {
       display: block;
       margin-top: 0.5rem;
@@ -49,9 +53,21 @@
       cursor: not-allowed;
     }
 
+    .disabled {
+      background: #eee;
+      color: #666;
+      cursor: not-allowed;
+    }
+
     .note {
       font-size: 0.9rem;
       opacity: 0.8;
+    }
+
+    .login-note {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #444;
     }
   </style>
 </head>
@@ -69,6 +85,7 @@
 
 <h1>Monthly Speaker Sign‑Up</h1>
 
+<!-- AUTH -->
 <section id="auth-section">
   <p class="note">
     Register once with your email.  
@@ -89,10 +106,14 @@
   <p id="authMessage"></p>
 </section>
 
-<section id="slots-section" style="display:none;">
+<!-- SLOTS -->
+<section id="slots-section">
   <h2>Available Time Slots</h2>
   <p class="note">You may select one time slot only.</p>
   <div id="slots"></div>
+  <p id="loginNote" class="login-note" style="display:none;">
+    Log in to book a time slot.
+  </p>
 </section>
 
 </main>
@@ -107,12 +128,14 @@
   );
 
   const authSection = document.getElementById("auth-section");
-  const slotsSection = document.getElementById("slots-section");
   const slotsDiv = document.getElementById("slots");
   const authMessage = document.getElementById("authMessage");
+  const loginNote = document.getElementById("loginNote");
+
+  let currentUser = null;
 
   /*************************
-   * TIME FORMAT (NO TZ MATH)
+   * TIME FORMAT (NO TZ)
    *************************/
   function formatLocalTime(ts) {
     const timePart = ts.split(" ")[1].slice(0, 5); // HH:MM
@@ -124,6 +147,9 @@
     return `${hour}:${minute.toString().padStart(2, "0")} ${ampm}`;
   }
 
+  /*************************
+   * SEND MAGIC LINK
+   *************************/
   document.getElementById("sendLink").onclick = async () => {
     const email = email.value.trim();
     const displayName = displayName.value.trim();
@@ -147,7 +173,10 @@
       : "Check your email to confirm.";
   };
 
-  async function loadSlots(user) {
+  /*************************
+   * LOAD SLOTS (PUBLIC)
+   *************************/
+  async function loadSlots() {
     slotsDiv.innerHTML = "";
 
     const { data: events } = await supabaseClient
@@ -156,7 +185,7 @@
       .eq("signup_open", true)
       .limit(1);
 
-    if (!events?.length) {
+    if (!events || !events.length) {
       slotsDiv.textContent = "No open events.";
       return;
     }
@@ -178,29 +207,39 @@
         btn.textContent = `${start} – ${end} (Booked)`;
         btn.disabled = true;
         btn.classList.add("booked");
+      } else if (!currentUser) {
+        btn.textContent = `${start} – ${end}`;
+        btn.disabled = true;
+        btn.classList.add("disabled");
       } else {
         btn.textContent = `${start} – ${end}`;
         btn.onclick = async () => {
           await supabaseClient
             .from("time_slots")
-            .update({ booked_by: user.id })
+            .update({ booked_by: currentUser.id })
             .eq("id", slot.id);
-          loadSlots(user);
+          loadSlots();
         };
       }
 
       slotsDiv.appendChild(btn);
     }
+
+    loginNote.style.display = currentUser ? "none" : "block";
   }
 
+  /*************************
+   * INIT
+   *************************/
   async function init() {
     const { data: { user } } = await supabaseClient.auth.getUser();
-    if (!user) return;
+    currentUser = user || null;
 
-    authSection.style.display = "none";
-    slotsSection.style.display = "block";
+    if (currentUser) {
+      authSection.style.display = "none";
+    }
 
-    await loadSlots(user);
+    loadSlots();
   }
 
   init();
