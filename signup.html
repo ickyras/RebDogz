@@ -5,7 +5,7 @@
   <title>Sign Up – Rebellion Dogz</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Supabase JS -->
+  <!-- Supabase JS (global `supabase`) -->
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
   <style>
@@ -53,7 +53,7 @@
 
   <h1>Monthly Speaker Sign‑Up</h1>
 
-  <!-- AUTH / REGISTRATION -->
+  <!-- REGISTRATION / AUTH -->
   <section id="auth-section">
     <p class="note">
       Register once with your email.  
@@ -75,7 +75,7 @@
     <p id="authMessage"></p>
   </section>
 
-  <!-- SLOTS -->
+  <!-- SLOT SELECTION -->
   <section id="slots-section" style="display:none;">
     <h2>Available Time Slots</h2>
     <p class="note">
@@ -93,7 +93,8 @@
     const SUPABASE_URL = "https://pkfrmugpppbqetekagyh.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_kIDCRuBpvOWGgy54L685HQ_zuFa-PLM";
 
-    const supabase = supabase.createClient(
+    // ✅ IMPORTANT: client renamed to avoid collision
+    const supabaseClient = supabase.createClient(
       SUPABASE_URL,
       SUPABASE_ANON_KEY
     );
@@ -115,10 +116,9 @@
         return;
       }
 
-      // Store display name locally until confirmation completes
       localStorage.setItem("display_name", displayName);
 
-      const { error } = await supabase.auth.signInWithOtp({
+      const { error } = await supabaseClient.auth.signInWithOtp({
         email,
         options: {
           emailRedirectTo: window.location.href
@@ -141,14 +141,14 @@
       const displayName =
         localStorage.getItem("display_name") || user.email;
 
-      const { data } = await supabase
+      const { data } = await supabaseClient
         .from("profiles")
         .select("id")
         .eq("id", user.id)
         .single();
 
       if (!data) {
-        await supabase.from("profiles").insert({
+        await supabaseClient.from("profiles").insert({
           id: user.id,
           email: user.email,
           display_name: displayName
@@ -157,13 +157,12 @@
     }
 
     /*************************
-     * LOAD SLOTS
+     * LOAD TIME SLOTS
      *************************/
     async function loadSlots(user) {
       slotsDiv.innerHTML = "";
 
-      // Get the open event
-      const { data: events } = await supabase
+      const { data: events } = await supabaseClient
         .from("events")
         .select("*")
         .eq("signup_open", true)
@@ -176,7 +175,7 @@
 
       const eventId = events[0].id;
 
-      const { data: slots } = await supabase
+      const { data: slots } = await supabaseClient
         .from("time_slots")
         .select("*")
         .eq("event_id", eventId)
@@ -203,7 +202,7 @@
         } else {
           btn.textContent = `${start} – ${end}`;
           btn.onclick = async () => {
-            const { error } = await supabase
+            const { error } = await supabaseClient
               .from("time_slots")
               .update({ booked_by: user.id })
               .eq("id", slot.id);
@@ -226,7 +225,7 @@
     async function init() {
       const {
         data: { user }
-      } = await supabase.auth.getUser();
+      } = await supabaseClient.auth.getUser();
 
       if (!user) return;
 
