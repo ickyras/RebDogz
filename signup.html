@@ -1,134 +1,244 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Booking System</title>
-    <!-- Tailwind CSS for Structure -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Vue.js (Easier for single-file HTML than React) -->
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <!-- Supabase Library -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta charset="UTF-8" />
+  <title>Sign Up – Rebellion Dogz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Supabase JS -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+
+    h1, h2 {
+      margin-bottom: 0.5rem;
+    }
+
+    input, button {
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .slot {
+      display: block;
+      margin-top: 0.5rem;
+      text-align: left;
+    }
+
+    .booked {
+      background: #ddd;
+      cursor: not-allowed;
+    }
+
+    .note {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+  </style>
 </head>
-<body class="bg-slate-50 font-sans text-slate-900">
-    <div id="app" v-cloak>
-        <!-- Navigation -->
-        <nav class="bg-white border-b border-slate-200 sticky top-0 z-10">
-            <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <div class="bg-indigo-600 p-1.5 rounded-lg text-white">
-                        <i data-lucide="calendar"></i>
-                    </div>
-                    <span class="font-bold text-lg tracking-tight">EventBook</span>
-                </div>
-                <div v-if="user" class="flex items-center gap-4">
-                    <span class="text-sm font-semibold text-slate-700">{{ user.email }}</span>
-                    <button @click="signOut" class="text-red-600 hover:bg-red-50 p-2 rounded-full transition-colors">
-                        <i data-lucide="log-out"></i>
-                    </button>
-                </div>
-                <button v-else @click="signIn" class="bg-indigo-600 text-white px-5 py-2 rounded-full text-sm font-bold">
-                    Sign In
-                </button>
-            </div>
-        </nav>
 
-        <main class="max-w-5xl mx-auto px-4 py-8">
-            <!-- Error Message -->
-            <div v-if="error" class="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3 text-red-800">
-                <i data-lucide="alert-circle"></i>
-                <p class="text-sm font-medium">{{ error }}</p>
-            </div>
+<body>
 
-            <!-- Loading State -->
-            <div v-if="loading" class="flex flex-col items-center py-20">
-                <div class="animate-spin text-indigo-600 mb-4">
-                    <i data-lucide="loader-2" size="40"></i>
-                </div>
-                <p class="text-slate-500">Loading event details...</p>
-            </div>
+  <h1>Monthly Speaker Sign‑Up</h1>
 
-            <!-- Event Content -->
-            <div v-else-if="activeEvent" class="space-y-8">
-                <section class="bg-indigo-900 rounded-3xl text-white p-8 md:p-12 shadow-xl relative overflow-hidden">
-                    <h1 class="text-4xl font-extrabold mb-4">{{ activeEvent.name }}</h1>
-                    <p class="text-indigo-100 text-lg opacity-90">{{ activeEvent.description }}</p>
-                    <div class="mt-6 flex items-center gap-2 text-indigo-200">
-                        <i data-lucide="calendar" size="18"></i>
-                        <span>{{ formatDate(activeEvent.date) }}</span>
-                    </div>
-                </section>
+  <!-- AUTH / REGISTRATION -->
+  <section id="auth-section">
+    <p class="note">
+      Register once with your email.  
+      Your email is used only for confirmation and is never shown publicly.
+    </p>
 
-                <!-- Booking Grid -->
-                <section>
-                    <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
-                        <i data-lucide="clock" class="text-indigo-600"></i>
-                        Available Time Slots
-                    </h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div v-for="slot in slots" :key="slot.id" 
-                             @click="bookSlot(slot)"
-                             :class="[
-                                'p-5 rounded-2xl border transition-all cursor-pointer',
-                                slot.user_id ? 'bg-slate-100 opacity-60 cursor-not-allowed' : 'bg-white hover:border-indigo-400 hover:shadow-lg'
-                             ]">
-                            <div class="font-mono font-bold mb-4">{{ slot.start_time.slice(0,5) }} - {{ slot.end_time.slice(0,5) }}</div>
-                            <div class="flex items-center gap-2">
-                                <div :class="['w-2 h-2 rounded-full', slot.user_id ? 'bg-slate-400' : 'bg-green-500']"></div>
-                                <span class="text-xs font-bold text-slate-500 uppercase">{{ slot.user_id ? 'Taken' : 'Available' }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        </main>
-    </div>
+    <label>
+      Display name (shown publicly)
+      <input id="displayName" placeholder="First name or username" />
+    </label>
 
-    <script>
-        const { createApp, ref, onMounted } = Vue;
-        
-        // --- REPLACE WITH YOUR CREDENTIALS ---
-        const SUPABASE_URL = "https://pkfrmugpppbqetekagyh.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_kIDCRuBpvOWGgy54L685HQ_zuFa-PLM";
-        const supabase = exports.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <label>
+      Email address
+      <input id="email" type="email" placeholder="you@example.com" />
+    </label>
 
-        createApp({
-            setup() {
-                const user = ref(null);
-                const activeEvent = ref(null);
-                const slots = ref([]);
-                const loading = ref(true);
-                const error = ref(null);
+    <button id="sendLink">Send Confirmation Link</button>
 
-                const fetchData = async () => {
-                    loading.value = true;
-                    try {
-                        const { data: event } = await supabase.from('events').select('*').eq('is_active', true).single();
-                        activeEvent.value = event;
-                        if (event) {
-                            const { data: slotData } = await supabase.from('time_slots').select('*').eq('event_id', event.id).order('start_time');
-                            slots.value = slotData;
-                        }
-                    } catch (e) { error.value = "Failed to load data"; }
-                    loading.value = false;
-                    setTimeout(() => lucide.createIcons(), 100);
-                };
+    <p id="authMessage"></p>
+  </section>
 
-                onMounted(() => {
-                    fetchData();
-                    lucide.createIcons();
-                });
+  <!-- SLOTS -->
+  <section id="slots-section" style="display:none;">
+    <h2>Available Time Slots</h2>
+    <p class="note">
+      You may select one time slot only.
+      Once booked, it cannot be changed online.
+    </p>
 
-                return { user, activeEvent, slots, loading, error, formatDate: (d) => new Date(d).toLocaleDateString() };
+    <div id="slots"></div>
+  </section>
+
+  <script>
+    /*************************
+     * SUPABASE CONFIG
+     *************************/
+    const SUPABASE_URL = "https://pkfrmugpppbqetekagyh.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_kIDCRuBpvOWGgy54L685HQ_zuFa-PLM";
+
+    const supabase = supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
+
+    const authSection = document.getElementById("auth-section");
+    const slotsSection = document.getElementById("slots-section");
+    const slotsDiv = document.getElementById("slots");
+    const authMessage = document.getElementById("authMessage");
+
+    /*************************
+     * SEND MAGIC LINK
+     *************************/
+    document.getElementById("sendLink").onclick = async () => {
+      const email = document.getElementById("email").value.trim();
+      const displayName = document.getElementById("displayName").value.trim();
+
+      if (!email || !displayName) {
+        authMessage.textContent = "Both fields are required.";
+        return;
+      }
+
+      // Store display name locally until confirmation completes
+      localStorage.setItem("display_name", displayName);
+
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: window.location.href
+        }
+      });
+
+      if (error) {
+        authMessage.textContent = error.message;
+        return;
+      }
+
+      authMessage.textContent =
+        "Check your email and click the confirmation link.";
+    };
+
+    /*************************
+     * ENSURE PROFILE EXISTS
+     *************************/
+    async function ensureProfile(user) {
+      const displayName =
+        localStorage.getItem("display_name") || user.email;
+
+      const { data } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("id", user.id)
+        .single();
+
+      if (!data) {
+        await supabase.from("profiles").insert({
+          id: user.id,
+          email: user.email,
+          display_name: displayName
+        });
+      }
+    }
+
+    /*************************
+     * LOAD SLOTS
+     *************************/
+    async function loadSlots(user) {
+      slotsDiv.innerHTML = "";
+
+      // Get the open event
+      const { data: events } = await supabase
+        .from("events")
+        .select("*")
+        .eq("signup_open", true)
+        .limit(1);
+
+      if (!events || events.length === 0) {
+        slotsDiv.textContent = "No open events at this time.";
+        return;
+      }
+
+      const eventId = events[0].id;
+
+      const { data: slots } = await supabase
+        .from("time_slots")
+        .select("*")
+        .eq("event_id", eventId)
+        .order("starts_at");
+
+      for (const slot of slots) {
+        const btn = document.createElement("button");
+        btn.className = "slot";
+
+        const start = new Date(slot.starts_at).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+
+        const end = new Date(slot.ends_at).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+
+        if (slot.booked_by) {
+          btn.textContent = `${start} – ${end} (Booked)`;
+          btn.classList.add("booked");
+          btn.disabled = true;
+        } else {
+          btn.textContent = `${start} – ${end}`;
+          btn.onclick = async () => {
+            const { error } = await supabase
+              .from("time_slots")
+              .update({ booked_by: user.id })
+              .eq("id", slot.id);
+
+            if (error) {
+              alert(error.message);
+            } else {
+              loadSlots(user);
             }
-        }).mount('#app');
-    </script>
+          };
+        }
 
-    <style>
-        [v-cloak] { display: none; }
-    </style>
+        slotsDiv.appendChild(btn);
+      }
+    }
+
+    /*************************
+     * INIT
+     *************************/
+    async function init() {
+      const {
+        data: { user }
+      } = await supabase.auth.getUser();
+
+      if (!user) return;
+
+      authSection.style.display = "none";
+      slotsSection.style.display = "block";
+
+      await ensureProfile(user);
+      await loadSlots(user);
+    }
+
+    init();
+  </script>
+
 </body>
 </html>
