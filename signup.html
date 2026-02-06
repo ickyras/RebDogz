@@ -63,12 +63,6 @@
       font-size: 0.9rem;
       opacity: 0.8;
     }
-
-    .login-note {
-      margin-top: 1rem;
-      font-size: 0.9rem;
-      color: #444;
-    }
   </style>
 </head>
 
@@ -85,7 +79,6 @@
 
 <h1>Monthly Speaker Sign‑Up</h1>
 
-<!-- AUTH -->
 <section id="auth-section">
   <p class="note">
     Register once with your email.  
@@ -106,14 +99,10 @@
   <p id="authMessage"></p>
 </section>
 
-<!-- SLOTS -->
 <section id="slots-section">
   <h2>Available Time Slots</h2>
   <p class="note">You may select one time slot only.</p>
   <div id="slots"></div>
-  <p id="loginNote" class="login-note" style="display:none;">
-    Log in to book a time slot.
-  </p>
 </section>
 
 </main>
@@ -127,29 +116,23 @@
     SUPABASE_ANON_KEY
   );
 
-  const authSection = document.getElementById("auth-section");
   const slotsDiv = document.getElementById("slots");
+  const authSection = document.getElementById("auth-section");
   const authMessage = document.getElementById("authMessage");
-  const loginNote = document.getElementById("loginNote");
 
   let currentUser = null;
 
   /*************************
-   * TIME FORMAT (NO TZ)
+   * TIME FORMAT (UTC → PST)
    *************************/
-  function formatLocalTime(ts) {
-    const timePart = ts.split(" ")[1].slice(0, 5); // HH:MM
-    let [hour, minute] = timePart.split(":").map(Number);
-
-    const ampm = hour >= 12 ? "PM" : "AM";
-    hour = hour % 12 || 12;
-
-    return `${hour}:${minute.toString().padStart(2, "0")} ${ampm}`;
+  function formatPST(ts) {
+    return new Date(ts).toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      timeZone: "America/Los_Angeles"
+    });
   }
 
-  /*************************
-   * SEND MAGIC LINK
-   *************************/
   document.getElementById("sendLink").onclick = async () => {
     const email = email.value.trim();
     const displayName = displayName.value.trim();
@@ -173,9 +156,6 @@
       : "Check your email to confirm.";
   };
 
-  /*************************
-   * LOAD SLOTS (PUBLIC)
-   *************************/
   async function loadSlots() {
     slotsDiv.innerHTML = "";
 
@@ -185,7 +165,7 @@
       .eq("signup_open", true)
       .limit(1);
 
-    if (!events || !events.length) {
+    if (!events?.length) {
       slotsDiv.textContent = "No open events.";
       return;
     }
@@ -200,8 +180,8 @@
       const btn = document.createElement("button");
       btn.className = "slot";
 
-      const start = formatLocalTime(slot.starts_at);
-      const end = formatLocalTime(slot.ends_at);
+      const start = formatPST(slot.starts_at);
+      const end = formatPST(slot.ends_at);
 
       if (slot.booked_by) {
         btn.textContent = `${start} – ${end} (Booked)`;
@@ -224,13 +204,8 @@
 
       slotsDiv.appendChild(btn);
     }
-
-    loginNote.style.display = currentUser ? "none" : "block";
   }
 
-  /*************************
-   * INIT
-   *************************/
   async function init() {
     const { data: { user } } = await supabaseClient.auth.getUser();
     currentUser = user || null;
