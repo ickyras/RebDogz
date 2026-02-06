@@ -14,6 +14,7 @@
       margin: 0 auto;
     }
 
+    /* NAV BAR */
     nav {
       display: flex;
       justify-content: space-between;
@@ -68,6 +69,7 @@
 
 <body>
 
+<!-- NAVIGATION -->
 <nav>
   <div><a href="/RebDogz/">Rebellion Dogz</a></div>
   <div>
@@ -79,6 +81,7 @@
 
 <h1>Monthly Speaker Sign‑Up</h1>
 
+<!-- AUTH -->
 <section id="auth-section">
   <p class="note">
     Register once with your email.  
@@ -99,6 +102,7 @@
   <p id="authMessage"></p>
 </section>
 
+<!-- SLOTS -->
 <section id="slots-section">
   <h2>Available Time Slots</h2>
   <p class="note">You may select one time slot only.</p>
@@ -123,14 +127,18 @@
   let currentUser = null;
 
   /*************************
-   * TIME FORMAT (UTC → PST)
+   * TIME FORMAT (UTC WALL TIME)
    *************************/
-  function formatPST(ts) {
-    return new Date(ts).toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      timeZone: "America/Los_Angeles"
-    });
+  function formatWallTime(ts) {
+    const d = new Date(ts);
+
+    let hour = d.getUTCHours();
+    const minute = d.getUTCMinutes();
+
+    const ampm = hour >= 12 ? "PM" : "AM";
+    hour = hour % 12 || 12;
+
+    return `${hour}:${minute.toString().padStart(2, "0")} ${ampm}`;
   }
 
   document.getElementById("sendLink").onclick = async () => {
@@ -165,7 +173,7 @@
       .eq("signup_open", true)
       .limit(1);
 
-    if (!events?.length) {
+    if (!events || !events.length) {
       slotsDiv.textContent = "No open events.";
       return;
     }
@@ -180,8 +188,8 @@
       const btn = document.createElement("button");
       btn.className = "slot";
 
-      const start = formatPST(slot.starts_at);
-      const end = formatPST(slot.ends_at);
+      const start = formatWallTime(slot.starts_at);
+      const end = formatWallTime(slot.ends_at);
 
       if (slot.booked_by) {
         btn.textContent = `${start} – ${end} (Booked)`;
