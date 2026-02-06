@@ -5,7 +5,7 @@
   <title>Sign Up – Rebellion Dogz</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Supabase JS (global `supabase`) -->
+  <!-- Supabase JS -->
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
   <style>
@@ -53,7 +53,7 @@
 
   <h1>Monthly Speaker Sign‑Up</h1>
 
-  <!-- REGISTRATION / AUTH -->
+  <!-- AUTH -->
   <section id="auth-section">
     <p class="note">
       Register once with your email.  
@@ -62,27 +62,25 @@
 
     <label>
       Display name (shown publicly)
-      <input id="displayName" placeholder="First name or username" />
+      <input id="displayName" />
     </label>
 
     <label>
       Email address
-      <input id="email" type="email" placeholder="you@example.com" />
+      <input id="email" type="email" />
     </label>
 
     <button id="sendLink">Send Confirmation Link</button>
-
     <p id="authMessage"></p>
   </section>
 
-  <!-- SLOT SELECTION -->
+  <!-- SLOTS -->
   <section id="slots-section" style="display:none;">
     <h2>Available Time Slots</h2>
     <p class="note">
       You may select one time slot only.
       Once booked, it cannot be changed online.
     </p>
-
     <div id="slots"></div>
   </section>
 
@@ -93,7 +91,6 @@
     const SUPABASE_URL = "https://pkfrmugpppbqetekagyh.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_kIDCRuBpvOWGgy54L685HQ_zuFa-PLM";
 
-    // ✅ IMPORTANT: client renamed to avoid collision
     const supabaseClient = supabase.createClient(
       SUPABASE_URL,
       SUPABASE_ANON_KEY
@@ -103,6 +100,17 @@
     const slotsSection = document.getElementById("slots-section");
     const slotsDiv = document.getElementById("slots");
     const authMessage = document.getElementById("authMessage");
+
+    /*************************
+     * PST TIME FORMATTER
+     *************************/
+    function formatTimePST(ts) {
+      return new Date(ts).toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        timeZone: "America/Los_Angeles"
+      });
+    }
 
     /*************************
      * SEND MAGIC LINK
@@ -121,21 +129,17 @@
       const { error } = await supabaseClient.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: window.location.href
+          emailRedirectTo: "https://ickyras.github.io/RebDogz/signup.html"
         }
       });
 
-      if (error) {
-        authMessage.textContent = error.message;
-        return;
-      }
-
-      authMessage.textContent =
-        "Check your email and click the confirmation link.";
+      authMessage.textContent = error
+        ? error.message
+        : "Check your email and click the confirmation link.";
     };
 
     /*************************
-     * ENSURE PROFILE EXISTS
+     * ENSURE PROFILE
      *************************/
     async function ensureProfile(user) {
       const displayName =
@@ -157,7 +161,7 @@
     }
 
     /*************************
-     * LOAD TIME SLOTS
+     * LOAD SLOTS
      *************************/
     async function loadSlots(user) {
       slotsDiv.innerHTML = "";
@@ -185,15 +189,8 @@
         const btn = document.createElement("button");
         btn.className = "slot";
 
-        const start = new Date(slot.starts_at).toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit"
-        });
-
-        const end = new Date(slot.ends_at).toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit"
-        });
+        const start = formatTimePST(slot.starts_at);
+        const end = formatTimePST(slot.ends_at);
 
         if (slot.booked_by) {
           btn.textContent = `${start} – ${end} (Booked)`;
