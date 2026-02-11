@@ -249,21 +249,34 @@
     }
   }
 
-  /*************************
-   * INIT
-   *************************/
-  async function init() {
-    const { data: { user } } = await supabaseClient.auth.getUser();
-    currentUser = user || null;
+/*************************
+ * INIT
+ *************************/
+async function init() {
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  currentUser = user || null;
 
-    if (currentUser) {
-      authSection.style.display = "none";
+  if (currentUser) {
+
+    // ✅ Update display_name from localStorage after magic link login
+    const storedName = localStorage.getItem("display_name");
+
+    if (storedName) {
+      await supabaseClient
+        .from("profiles")
+        .update({ display_name: storedName })
+        .eq("id", currentUser.id);
+
+      localStorage.removeItem("display_name");
     }
 
-    loadSlots();
+    authSection.style.display = "none";
   }
 
-  init();
+  loadSlots();
+}
+
+init();
 </script>
 
 </body>
