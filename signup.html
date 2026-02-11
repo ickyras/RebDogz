@@ -114,7 +114,6 @@
 <script>
   const SUPABASE_URL = "https://pkfrmugpppbqetekagyh.supabase.co";
   const SUPABASE_ANON_KEY = "sb_publishable_kIDCRuBpvOWGgy54L685HQ_zuFa-PLM";
-
   const supabaseClient = supabase.createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
@@ -184,17 +183,18 @@
       return;
     }
 
-const { data: slots, error: slotsError } = await supabaseClient
-  .from("time_slots")
-  .select(`
-    *,
-    profiles:booked_by (
-      display_name
-    )
-  `)
-  .eq("event_id", events[0].id)
-  .order("starts_at");
-console.log("SLOTS:", JSON.stringify(slots, null, 2));
+    const { data: slots, error: slotsError } = await supabaseClient
+      .from("time_slots")
+      .select(`
+        *,
+        profiles:booked_by (
+          display_name
+        )
+      `)
+      .eq("event_id", events[0].id)
+      .order("starts_at");
+
+    console.log("SLOTS:", JSON.stringify(slots, null, 2));
 
     for (const slot of slots) {
       const btn = document.createElement("button");
@@ -205,8 +205,10 @@ console.log("SLOTS:", JSON.stringify(slots, null, 2));
 
       if (slot.booked_by) {
 
+        const name = slot.profiles?.display_name || "Booked";
+
         if (currentUser && slot.booked_by === currentUser.id) {
-          btn.textContent = `${start} – ${end} (Your booking – click to cancel)`;
+          btn.textContent = `${start} – ${end} (${name} – click to cancel)`;
           btn.classList.add("mine");
 
           btn.onclick = async () => {
@@ -250,35 +252,30 @@ console.log("SLOTS:", JSON.stringify(slots, null, 2));
     }
   }
 
-/*************************
- * INIT
- *************************/
-async function init() {
-  const { data: { user } } = await supabaseClient.auth.getUser();
-  currentUser = user || null;
+  /*************************
+   * INIT
+   *************************/
+  async function init() {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    currentUser = user || null;
 
-  if (currentUser) {
+    if (currentUser) {
+      const storedName = localStorage.getItem("display_name");
 
-    // ✅ Update display_name from localStorage after magic link login
-    const storedName = localStorage.getItem("display_name");
+      if (storedName) {
+        await supabaseClient
+          .from("profiles")
+          .update({ display_name: storedName })
+          .eq("id", currentUser.id);
 
-    if (storedName) {
-      await supabaseClient
-        .from("profiles")
-        .update({ display_name: storedName })
-        .eq("id", currentUser.id);
+        localStorage.removeItem("display_name");
+      }
 
-      localStorage.removeItem("display_name");
+      authSection.style.display = "none";
     }
 
-    authSection.style.display = "none";
+    loadSlots();
   }
 
-  loadSlots();
-}
-
-init();
+  init();
 </script>
-
-</body>
-</html>
