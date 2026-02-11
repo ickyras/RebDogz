@@ -1,70 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Sign Up – Rebellion Dogz</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8" />
+  <title>Sign Up – Rebellion Dogz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
-<style>
-body {
-  font-family: sans-serif;
-  max-width: 900px;
-  margin: 0 auto;
-}
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+    }
 
-main {
-  padding: 2rem 1rem;
-}
+    nav {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem;
+      border-bottom: 1px solid #ccc;
+    }
 
-input, button {
-  width: 100%;
-  padding: 0.5rem;
-  margin-top: 0.5rem;
-}
+    nav a {
+      margin-right: 1rem;
+      text-decoration: none;
+      font-weight: bold;
+      color: black;
+    }
 
-button {
-  cursor: pointer;
-}
+    main {
+      padding: 2rem 1rem;
+    }
 
-.slot {
-  display: block;
-  margin-top: 0.5rem;
-  text-align: left;
-}
+    input, button {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+    }
 
-.booked {
-  background: #ddd;
-  cursor: not-allowed;
-}
+    button {
+      cursor: pointer;
+    }
 
-.mine {
-  background: #ffeeba;
-}
+    .slot {
+      display: block;
+      margin-top: 0.5rem;
+      text-align: left;
+    }
 
-.disabled {
-  background: #eee;
-  color: #666;
-  cursor: not-allowed;
-}
+    .booked {
+      background: #ddd;
+      cursor: not-allowed;
+    }
 
-.note {
-  font-size: 0.9rem;
-  opacity: 0.8;
-}
-</style>
+    .mine {
+      background: #ffeeba;
+    }
+
+    .disabled {
+      background: #eee;
+      color: #666;
+      cursor: not-allowed;
+    }
+
+    .note {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+  </style>
 </head>
 
 <body>
 
+<nav>
+  <div><a href="/RebDogz/">Rebellion Dogz</a></div>
+  <div>
+    <a href="/RebDogz/signup.html">Sign Up</a>
+  </div>
+</nav>
+
 <main>
 
-<h1>Monthly Speaker Sign‑Up</h1>
+<h1>Monthly Speaker Sign Up</h1>
 
 <section id="auth-section">
   <p class="note">
-    Register once with your email.
+    Register once with your email.  
     Your email is used only for confirmation and is never shown publicly.
   </p>
 
@@ -91,156 +112,153 @@ button {
 </main>
 
 <script>
-const SUPABASE_URL = "PASTE_YOUR_SUPABASE_URL_HERE";
-const SUPABASE_ANON_KEY = "PASTE_YOUR_PUBLIC_ANON_KEY_HERE";
+  const SUPABASE_URL = "https://pkfrmugpppbqetekagyh.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_kIDCRuBpvOWGgy54L685HQ_zuFa-PLM";
 
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
+  const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
 
-const slotsDiv = document.getElementById("slots");
-const authSection = document.getElementById("auth-section");
-const authMessage = document.getElementById("authMessage");
+  const slotsDiv = document.getElementById("slots");
+  const authSection = document.getElementById("auth-section");
+  const authMessage = document.getElementById("authMessage");
 
-let currentUser = null;
+  let currentUser = null;
 
-/*************************
- * DISPLAY UTC WALL TIME
- *************************/
-function formatWallTime(ts) {
-  const d = new Date(ts);
-  let hour = d.getUTCHours();
-  const minute = d.getUTCMinutes().toString().padStart(2, "0");
-  const ampm = hour >= 12 ? "PM" : "AM";
-  hour = hour % 12 || 12;
-  return `${hour}:${minute} ${ampm}`;
-}
+  /*************************
+   * TIME FORMAT (UTC WALL TIME)
+   *************************/
+  function formatWallTime(ts) {
+    const d = new Date(ts);
 
-/*************************
- * MAGIC LINK LOGIN
- *************************/
-document.getElementById("sendLink").onclick = async () => {
-  const email = document.getElementById("email").value.trim();
-  const displayName = document.getElementById("displayName").value.trim();
+    let hour = d.getUTCHours();
+    const minute = d.getUTCMinutes();
 
-  if (!email || !displayName) {
-    authMessage.textContent = "Both fields required.";
-    return;
+    const ampm = hour >= 12 ? "PM" : "AM";
+    hour = hour % 12 || 12;
+
+    return `${hour}:${minute.toString().padStart(2, "0")} ${ampm}`;
   }
 
-  localStorage.setItem("display_name", displayName);
+  /*************************
+   * MAGIC LINK LOGIN
+   *************************/
+  document.getElementById("sendLink").onclick = async () => {
+    const emailValue = document.getElementById("email").value.trim();
+    const displayNameValue = document.getElementById("displayName").value.trim();
 
-  const { error } = await supabaseClient.auth.signInWithOtp({
-    email,
-    options: {
-      emailRedirectTo: window.location.href
+    if (!emailValue || !displayNameValue) {
+      authMessage.textContent = "Both fields required.";
+      return;
     }
-  });
 
-  authMessage.textContent = error
-    ? error.message
-    : "Check your email to confirm.";
-};
+    localStorage.setItem("display_name", displayNameValue);
 
-/*************************
- * LOAD SLOTS
- *************************/
-async function loadSlots() {
-  slotsDiv.innerHTML = "";
+    const { error } = await supabaseClient.auth.signInWithOtp({
+      email: emailValue,
+      options: {
+        emailRedirectTo: "https://ickyras.github.io/RebDogz/signup.html"
+      }
+    });
 
-  const { data: events } = await supabaseClient
-    .from("events")
-    .select("*")
-    .eq("signup_open", true)
-    .limit(1);
+    authMessage.textContent = error
+      ? error.message
+      : "Check your email to confirm.";
+  };
 
-  if (!events?.length) {
-    slotsDiv.textContent = "No open events.";
-    return;
-  }
+  /*************************
+   * LOAD SLOTS
+   *************************/
+  async function loadSlots() {
+    slotsDiv.innerHTML = "";
 
-  const { data: slots } = await supabaseClient
-    .from("time_slots")
-    .select("*")
-    .eq("event_id", events[0].id)
-    .order("starts_at");
+    const { data: events } = await supabaseClient
+      .from("events")
+      .select("*")
+      .eq("signup_open", true)
+      .limit(1);
 
-  for (const slot of slots) {
-    const btn = document.createElement("button");
-    btn.className = "slot";
+    if (!events || !events.length) {
+      slotsDiv.textContent = "No open events.";
+      return;
+    }
 
-    const start = formatWallTime(slot.starts_at);
-    const end = formatWallTime(slot.ends_at);
+    const { data: slots } = await supabaseClient
+      .from("time_slots")
+      .select("*")
+      .eq("event_id", events[0].id)
+      .order("starts_at");
 
-    // ✅ SLOT BOOKED
-    if (slot.booked_by) {
+    for (const slot of slots) {
+      const btn = document.createElement("button");
+      btn.className = "slot";
 
-      // ✅ If it's YOUR booking → allow cancel
-      if (currentUser && slot.booked_by === currentUser.id) {
-        btn.textContent = `${start} – ${end} (Your booking – click to cancel)`;
-        btn.classList.add("mine");
+      const start = formatWallTime(slot.starts_at);
+      const end = formatWallTime(slot.ends_at);
 
-        btn.onclick = async () => {
-          const confirmed = confirm("Cancel your booking?");
-          if (!confirmed) return;
+      if (slot.booked_by) {
 
-          await supabaseClient
-            .from("time_slots")
-            .update({ booked_by: null })
-            .eq("id", slot.id);
+        if (currentUser && slot.booked_by === currentUser.id) {
+          btn.textContent = `${start} – ${end} (Your booking – click to cancel)`;
+          btn.classList.add("mine");
 
-          loadSlots();
-        };
+          btn.onclick = async () => {
+            const confirmed = confirm("Cancel your booking?");
+            if (!confirmed) return;
+
+            await supabaseClient
+              .from("time_slots")
+              .update({ booked_by: null })
+              .eq("id", slot.id);
+
+            loadSlots();
+          };
+
+        } else {
+          btn.textContent = `${start} – ${end} (Booked)`;
+          btn.disabled = true;
+          btn.classList.add("booked");
+        }
 
       } else {
-        // ✅ Someone else's booking
-        btn.textContent = `${start} – ${end} (Booked)`;
-        btn.disabled = true;
-        btn.classList.add("booked");
+
+        if (!currentUser) {
+          btn.textContent = `${start} – ${end}`;
+          btn.disabled = true;
+          btn.classList.add("disabled");
+        } else {
+          btn.textContent = `${start} – ${end}`;
+          btn.onclick = async () => {
+            await supabaseClient
+              .from("time_slots")
+              .update({ booked_by: currentUser.id })
+              .eq("id", slot.id);
+
+            loadSlots();
+          };
+        }
       }
 
+      slotsDiv.appendChild(btn);
     }
-
-    // ✅ SLOT AVAILABLE
-    else {
-
-      if (!currentUser) {
-        btn.textContent = `${start} – ${end}`;
-        btn.disabled = true;
-        btn.classList.add("disabled");
-      } else {
-        btn.textContent = `${start} – ${end}`;
-        btn.onclick = async () => {
-          await supabaseClient
-            .from("time_slots")
-            .update({ booked_by: currentUser.id })
-            .eq("id", slot.id);
-
-          loadSlots();
-        };
-      }
-    }
-
-    slotsDiv.appendChild(btn);
-  }
-}
-
-/*************************
- * INIT
- *************************/
-async function init() {
-  const { data: { user } } = await supabaseClient.auth.getUser();
-  currentUser = user || null;
-
-  if (currentUser) {
-    authSection.style.display = "none";
   }
 
-  loadSlots();
-}
+  /*************************
+   * INIT
+   *************************/
+  async function init() {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    currentUser = user || null;
 
-init();
+    if (currentUser) {
+      authSection.style.display = "none";
+    }
+
+    loadSlots();
+  }
+
+  init();
 </script>
 
 </body>
