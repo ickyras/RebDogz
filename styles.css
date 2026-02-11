@@ -1,31 +1,96 @@
-@ -25,7 +25,7 @@ body {
+/* ---------- GLOBAL ---------- */
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #5b5fd6;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ---------- SITE HEADER ---------- */
+
+.site-header {
+    padding: 1rem;
+    text-align: center;
+}
+
+/* ---------- TOP NAV ---------- */
+
+.top-nav {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.top-nav a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
 }
 
 .logo {
-    max-width: 200px;
     max-width: 170px;
     height: auto;
 }
 
-@ -78,11 +78,11 @@ body {
-    border: 3px solid #ffffff;
+/* ---------- BRAND HEADER ---------- */
+
+.brand-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1rem;
 }
 
-/* ---------- EVENT FONT SYSTEM (SINGLE SOURCE OF TRUTH) ---------- */
+.brand-header-image {
+    height: 220px;
+    width: auto;
+    max-width: 95%;
+}
+
+.brand-header-image:first-child {
+    margin-bottom: -12px;
+}
+
+/* ---------- HEADINGS ---------- */
+
+h2 {
+    font-family: 'Black Ops One', Arial, sans-serif;
+    color: #000000;
+    letter-spacing: 2px;
+}
+
+.section-title {
+    font-family: 'Black Ops One', Arial, sans-serif;
+    font-size: 2rem;
+    text-align: center;
+    margin: 2rem 0 1.5rem;
+}
+
+.date-title {
+    margin-top: 0;
+}
+
+/* ---------- MAIN IMAGE ---------- */
+
+.main-image img {
+    max-width: 100%;
+    height: auto;
+    border: 3px solid #ffffff;
+    display: block;
+    margin: 0 auto;
+}
+
 /* ---------- EVENT FONT SYSTEM ---------- */
 
 .event-font {
     font-family: 'Black Ops One', Arial, sans-serif;
-    font-size: 2rem; /* SAME AS Schedule of Events */
     font-size: 2rem;
     text-align: center;
 }
 
-@ -90,12 +90,21 @@ body {
-    margin: 2rem 0 1.5rem;
-}
-
-/* Slightly smaller text */
 .from-text {
     font-size: 1.6rem;
     margin-bottom: 0.75rem;
@@ -34,33 +99,83 @@
 /* ---------- COLOR HIGHLIGHTS ---------- */
 
 .highlight-blue {
-    color: royalblue;
+    color: rgb(240, 27, 151); /* most recent version */
 }
 
 .link-highlight {
     color: #ffef00; /* canary yellow */
 }
 
-/* ---------- LAYOUT ---------- */
+/* ---------- EVENT INFO ---------- */
 
 .event-info {
-@ -114,8 +123,6 @@ body {
+    max-width: 900px;
+    margin: 0 auto 3rem;
+    padding: 0 1rem;
+    text-align: center;
+}
+
+/* ---------- TWO COLUMNS ---------- */
+
+.two-column {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.column {
     flex: 1;
 }
 
-/* ---------- LOCATION ---------- */
+.column-heading {
+    font-family: 'Black Ops One', Arial, sans-serif;
+    font-size: 1.4rem;
+    margin-bottom: 0.75rem;
+}
+
+.under-from {
+    font-size: 1.4rem;
+}
+
+/* ---------- LOCATION SECTION ---------- */
 
 .location-section {
     margin-top: 3rem;
+    text-align: center;
 }
-@ -123,9 +130,7 @@ body {
+
+.middle-section {
+    margin-top: 3rem;
+    font-family: 'Black Ops One', Arial, sans-serif;
+    font-size: 1.4rem;
+    text-align: center;
+}
+
 /* ---------- LINKS ---------- */
 
 .inline-link {
     color: #ffffff;
-    text-decoration: underline;
-    font-weight: bold;
     text-decoration: none;
+    font-weight: bold;
 }
 
 /* ---------- FOOTER ---------- */
+
+footer {
+    text-align: center;
+    font-size: 0.8rem;
+    opacity: 0.7;
+    padding-bottom: 2rem;
+}
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width: 768px) {
+    .two-column {
+        flex-direction: column;
+    }
+
+    .brand-header-image {
+        height: 160px;
+    }
+}
