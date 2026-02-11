@@ -221,7 +221,7 @@ const { data: slots, error: slotsError } = await supabaseClient
           };
 
         } else {
-          btn.textContent = `${start} – ${end} (Booked)`;
+          btn.textContent = `${start} – ${end} (name)`;
           btn.disabled = true;
           btn.classList.add("booked");
         }
