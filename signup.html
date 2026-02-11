@@ -1,90 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Sign Up – Rebellion Dogz</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8" />
+<title>Sign Up – Rebellion Dogz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
-  <style>
-    body {
-      font-family: sans-serif;
-      max-width: 900px;
-      margin: 0 auto;
-    }
+<style>
+body {
+  font-family: sans-serif;
+  max-width: 900px;
+  margin: 0 auto;
+}
 
-    /* NAV BAR */
-    nav {
-      display: flex;
-      justify-content: space-between;
-      padding: 1rem;
-      border-bottom: 1px solid #ccc;
-    }
+main {
+  padding: 2rem 1rem;
+}
 
-    nav a {
-      margin-right: 1rem;
-      text-decoration: none;
-      font-weight: bold;
-      color: black;
-    }
+input, button {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+}
 
-    main {
-      padding: 2rem 1rem;
-    }
+button {
+  cursor: pointer;
+}
 
-    input, button {
-      width: 100%;
-      padding: 0.5rem;
-      margin-top: 0.5rem;
-    }
+.slot {
+  display: block;
+  margin-top: 0.5rem;
+  text-align: left;
+}
 
-    button {
-      cursor: pointer;
-    }
+.booked {
+  background: #ddd;
+  cursor: not-allowed;
+}
 
-    .slot {
-      display: block;
-      margin-top: 0.5rem;
-      text-align: left;
-    }
+.mine {
+  background: #ffeeba;
+}
 
-    .booked {
-      background: #ddd;
-      cursor: not-allowed;
-    }
+.disabled {
+  background: #eee;
+  color: #666;
+  cursor: not-allowed;
+}
 
-    .disabled {
-      background: #eee;
-      color: #666;
-      cursor: not-allowed;
-    }
-
-    .note {
-      font-size: 0.9rem;
-      opacity: 0.8;
-    }
-  </style>
+.note {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+</style>
 </head>
 
 <body>
-
-<!-- NAVIGATION -->
-<nav>
-  <div><a href="/RebDogz/">Rebellion Dogz</a></div>
-  <div>
-    <a href="/RebDogz/signup.html">Sign Up</a>
-  </div>
-</nav>
 
 <main>
 
 <h1>Monthly Speaker Sign‑Up</h1>
 
-<!-- AUTH -->
 <section id="auth-section">
   <p class="note">
-    Register once with your email.  
+    Register once with your email.
     Your email is used only for confirmation and is never shown publicly.
   </p>
 
@@ -102,7 +82,6 @@
   <p id="authMessage"></p>
 </section>
 
-<!-- SLOTS -->
 <section id="slots-section">
   <h2>Available Time Slots</h2>
   <p class="note">You may select one time slot only.</p>
@@ -112,90 +91,121 @@
 </main>
 
 <script>
-  const SUPABASE_URL = "https://pkfrmugpppbqetekagyh.supabase.co";
-  const SUPABASE_ANON_KEY = "sb_publishable_kIDCRuBpvOWGgy54L685HQ_zuFa-PLM";
+const SUPABASE_URL = "PASTE_YOUR_SUPABASE_URL_HERE";
+const SUPABASE_ANON_KEY = "PASTE_YOUR_PUBLIC_ANON_KEY_HERE";
 
-  const supabaseClient = supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
-  const slotsDiv = document.getElementById("slots");
-  const authSection = document.getElementById("auth-section");
-  const authMessage = document.getElementById("authMessage");
+const slotsDiv = document.getElementById("slots");
+const authSection = document.getElementById("auth-section");
+const authMessage = document.getElementById("authMessage");
 
-  let currentUser = null;
+let currentUser = null;
 
-  /*************************
-   * TIME FORMAT (UTC WALL TIME)
-   *************************/
-  function formatWallTime(ts) {
-    const d = new Date(ts);
+/*************************
+ * DISPLAY UTC WALL TIME
+ *************************/
+function formatWallTime(ts) {
+  const d = new Date(ts);
+  let hour = d.getUTCHours();
+  const minute = d.getUTCMinutes().toString().padStart(2, "0");
+  const ampm = hour >= 12 ? "PM" : "AM";
+  hour = hour % 12 || 12;
+  return `${hour}:${minute} ${ampm}`;
+}
 
-    let hour = d.getUTCHours();
-    const minute = d.getUTCMinutes();
+/*************************
+ * MAGIC LINK LOGIN
+ *************************/
+document.getElementById("sendLink").onclick = async () => {
+  const email = document.getElementById("email").value.trim();
+  const displayName = document.getElementById("displayName").value.trim();
 
-    const ampm = hour >= 12 ? "PM" : "AM";
-    hour = hour % 12 || 12;
-
-    return `${hour}:${minute.toString().padStart(2, "0")} ${ampm}`;
+  if (!email || !displayName) {
+    authMessage.textContent = "Both fields required.";
+    return;
   }
 
-  document.getElementById("sendLink").onclick = async () => {
-    const email = email.value.trim();
-    const displayName = displayName.value.trim();
+  localStorage.setItem("display_name", displayName);
 
-    if (!email || !displayName) {
-      authMessage.textContent = "Both fields required.";
-      return;
+  const { error } = await supabaseClient.auth.signInWithOtp({
+    email,
+    options: {
+      emailRedirectTo: window.location.href
     }
+  });
 
-    localStorage.setItem("display_name", displayName);
+  authMessage.textContent = error
+    ? error.message
+    : "Check your email to confirm.";
+};
 
-    const { error } = await supabaseClient.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: "https://ickyras.github.io/RebDogz/signup.html"
-      }
-    });
+/*************************
+ * LOAD SLOTS
+ *************************/
+async function loadSlots() {
+  slotsDiv.innerHTML = "";
 
-    authMessage.textContent = error
-      ? error.message
-      : "Check your email to confirm.";
-  };
+  const { data: events } = await supabaseClient
+    .from("events")
+    .select("*")
+    .eq("signup_open", true)
+    .limit(1);
 
-  async function loadSlots() {
-    slotsDiv.innerHTML = "";
+  if (!events?.length) {
+    slotsDiv.textContent = "No open events.";
+    return;
+  }
 
-    const { data: events } = await supabaseClient
-      .from("events")
-      .select("*")
-      .eq("signup_open", true)
-      .limit(1);
+  const { data: slots } = await supabaseClient
+    .from("time_slots")
+    .select("*")
+    .eq("event_id", events[0].id)
+    .order("starts_at");
 
-    if (!events || !events.length) {
-      slotsDiv.textContent = "No open events.";
-      return;
-    }
+  for (const slot of slots) {
+    const btn = document.createElement("button");
+    btn.className = "slot";
 
-    const { data: slots } = await supabaseClient
-      .from("time_slots")
-      .select("*")
-      .eq("event_id", events[0].id)
-      .order("starts_at");
+    const start = formatWallTime(slot.starts_at);
+    const end = formatWallTime(slot.ends_at);
 
-    for (const slot of slots) {
-      const btn = document.createElement("button");
-      btn.className = "slot";
+    // ✅ SLOT BOOKED
+    if (slot.booked_by) {
 
-      const start = formatWallTime(slot.starts_at);
-      const end = formatWallTime(slot.ends_at);
+      // ✅ If it's YOUR booking → allow cancel
+      if (currentUser && slot.booked_by === currentUser.id) {
+        btn.textContent = `${start} – ${end} (Your booking – click to cancel)`;
+        btn.classList.add("mine");
 
-      if (slot.booked_by) {
+        btn.onclick = async () => {
+          const confirmed = confirm("Cancel your booking?");
+          if (!confirmed) return;
+
+          await supabaseClient
+            .from("time_slots")
+            .update({ booked_by: null })
+            .eq("id", slot.id);
+
+          loadSlots();
+        };
+
+      } else {
+        // ✅ Someone else's booking
         btn.textContent = `${start} – ${end} (Booked)`;
         btn.disabled = true;
         btn.classList.add("booked");
-      } else if (!currentUser) {
+      }
+
+    }
+
+    // ✅ SLOT AVAILABLE
+    else {
+
+      if (!currentUser) {
         btn.textContent = `${start} – ${end}`;
         btn.disabled = true;
         btn.classList.add("disabled");
@@ -206,26 +216,31 @@
             .from("time_slots")
             .update({ booked_by: currentUser.id })
             .eq("id", slot.id);
+
           loadSlots();
         };
       }
-
-      slotsDiv.appendChild(btn);
-    }
-  }
-
-  async function init() {
-    const { data: { user } } = await supabaseClient.auth.getUser();
-    currentUser = user || null;
-
-    if (currentUser) {
-      authSection.style.display = "none";
     }
 
-    loadSlots();
+    slotsDiv.appendChild(btn);
+  }
+}
+
+/*************************
+ * INIT
+ *************************/
+async function init() {
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  currentUser = user || null;
+
+  if (currentUser) {
+    authSection.style.display = "none";
   }
 
-  init();
+  loadSlots();
+}
+
+init();
 </script>
 
 </body>
