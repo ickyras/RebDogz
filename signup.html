@@ -186,7 +186,12 @@
 
     const { data: slots } = await supabaseClient
       .from("time_slots")
-      .select("*")
+      .select(`
+        *,
+        profiles (
+        display_name
+        )
+      `)
       .eq("event_id", events[0].id)
       .order("starts_at");
 
