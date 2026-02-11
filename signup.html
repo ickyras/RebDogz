@@ -194,6 +194,7 @@ const { data: slots, error: slotsError } = await supabaseClient
   `)
   .eq("event_id", events[0].id)
   .order("starts_at");
+console.log("SLOTS:", JSON.stringify(slots, null, 2));
 
     for (const slot of slots) {
       const btn = document.createElement("button");
