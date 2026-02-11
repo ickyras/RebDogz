@@ -1,98 +1,66 @@
-/rebellion-dogz
-  /images
-    aa_logo.png
-    rebdogz_in_studio2.png
-  index.html
-  styles.css
-________________________________________
-✅ styles.css (complete)
-css
-@import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap');
-
-body {
-    margin: 0;
-    padding: 0;
-    background-color: #5b5fd6;
-    color: #ffffff;
-    font-family: Arial, Helvetica, sans-serif;
-    text-align: center;
+@ -25,7 +25,7 @@ body {
 }
 
-header {
-    padding: 2rem 1rem 1rem;
-}
-
-header img {
-    max-width: 220px;
-    width: 100%;
+.logo {
+    max-width: 200px;
+    max-width: 170px;
     height: auto;
-    margin-bottom: 1rem;
 }
 
-h1 {
-    font-family: 'Black Ops One', Arial, sans-serif;
-    font-size: 3.2rem;
-    letter-spacing: 3px;
-    margin: 0.5rem 0;
-    text-transform: uppercase;
-    color: #000000;
-}
-
-h2 {
-    font-family: 'Black Ops One', Arial, sans-serif;
-    font-size: 1.5rem;
-    margin-bottom: 2rem;
-    letter-spacing: 2px;
-    color: #000000;
-}
-
-.main-image {
-    max-width: 900px;
-    width: 90%;
-    margin: 0 auto 2.5rem;
-}
-
-.main-image img {
-    width: 100%;
-    height: auto;
+@ -78,11 +78,11 @@ body {
     border: 3px solid #ffffff;
 }
 
+/* ---------- EVENT FONT SYSTEM (SINGLE SOURCE OF TRUTH) ---------- */
+/* ---------- EVENT FONT SYSTEM ---------- */
+
+.event-font {
+    font-family: 'Black Ops One', Arial, sans-serif;
+    font-size: 2rem; /* SAME AS Schedule of Events */
+    font-size: 2rem;
+    text-align: center;
+}
+
+@ -90,12 +90,21 @@ body {
+    margin: 2rem 0 1.5rem;
+}
+
+/* Slightly smaller text */
+.from-text {
+    font-size: 1.6rem;
+    margin-bottom: 0.75rem;
+}
+
+/* ---------- COLOR HIGHLIGHTS ---------- */
+
+.highlight-blue {
+    color: royalblue;
+}
+
+.link-highlight {
+    color: #ffef00; /* canary yellow */
+}
+
+/* ---------- LAYOUT ---------- */
+
 .event-info {
-    max-width: 800px;
-    margin: 0 auto 3rem;
-    padding: 0 1rem;
+@ -114,8 +123,6 @@ body {
+    flex: 1;
 }
 
-.event-info p {
-    margin: 0.6rem 0;
-    line-height: 1.5;
-}
+/* ---------- LOCATION ---------- */
 
-.highlight {
-    font-size: 1.3rem;
-    font-weight: bold;
-    letter-spacing: 0.5px;
+.location-section {
+    margin-top: 3rem;
+}
+@ -123,9 +130,7 @@ body {
+/* ---------- LINKS ---------- */
+
+.inline-link {
     color: #ffffff;
+    text-decoration: underline;
+    font-weight: bold;
+    text-decoration: none;
 }
 
-footer {
-    font-size: 0.8rem;
-    opacity: 0.7;
-    padding-bottom: 2rem;
-}
-
-/* Mobile adjustments */
-@media (max-width: 600px) {
-    h1 {
-        font-size: 2.2rem;
-    }
-
-    h2 {
-        font-size: 1.25rem;
-    }
-
-    .highlight {
-        font-size: 1.15rem;
-    }
-}
+/* ---------- FOOTER ---------- */
