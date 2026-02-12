@@ -250,6 +250,11 @@ margin-top: 4px;
 }
 
 }
+@media (max-width: 900px) {
+  * {
+    outline: 1px solid red;
+  }
+}
 /* ---------- WATERMARK ---------- */
 
 body::before {
