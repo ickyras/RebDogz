@@ -214,22 +214,38 @@
           btn.classList.add("booked");
         }
 
-      } else {
-        if (!currentUser) {
-          btn.textContent = `${start} – ${end}`;
-          btn.disabled = true;
-          btn.classList.add("disabled");
-        } else {
-          btn.textContent = `${start} – ${end}`;
-          btn.onclick = async () => {
-            await supabaseClient
-              .from("time_slots")
-              .update({ booked_by: currentUser.id })
-              .eq("id", slot.id);
+} else {
 
-            loadSlots();
-          };
-        }
+  btn.textContent = `${start} – ${end}`;
+
+  const typeInput = document.createElement("input");
+  typeInput.placeholder = "Type of Act?";
+
+  const introInput = document.createElement("input");
+  introInput.placeholder = "How would you like to be introduced?";
+
+  btn.onclick = async () => {
+
+    if (!typeInput.value.trim()) {
+      alert("Please enter your Type of Act.");
+      return;
+    }
+
+    await supabaseClient
+      .from("time_slots")
+      .update({
+        booked_by: currentUser.id,
+        type_of_act: typeInput.value.trim(),
+        introduction_text: introInput.value.trim()
+      })
+      .eq("id", slot.id);
+
+    loadSlots();
+  };
+
+  slotsDiv.appendChild(typeInput);
+  slotsDiv.appendChild(introInput);
+}
       }
 
       slotsDiv.appendChild(btn);
