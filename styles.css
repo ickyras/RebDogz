@@ -10,7 +10,6 @@ font-family: Arial, Helvetica, sans-serif;
 
 .site-header {
 padding: 1rem;
-padding-top: 1rem;
 text-align: center;
 }
 
@@ -69,19 +68,14 @@ margin-bottom: 1rem;
 
 .brand-header-image {
 height: 220px;
-width: auto;
 max-width: 95%;
-}
-
-.brand-header-image:first-child {
-margin-bottom: -12px;
 }
 
 /* ---------- HEADINGS ---------- */
 
 h2 {
 font-family: 'Black Ops One', Arial, sans-serif;
-color: #000000;
+color: #000;
 letter-spacing: 2px;
 }
 
@@ -92,55 +86,7 @@ text-align: center;
 margin: 2rem 0 1.5rem;
 }
 
-.date-title {
-margin-top: 0;
-}
-
-/* ---------- MAIN IMAGE ---------- */
-
-.main-image img {
-max-width: 100%;
-height: auto;
-border: 3px solid #ffffff;
-display: block;
-margin: 0 auto;
-}
-
-/* ---------- EVENT FONT SYSTEM ---------- */
-
-.event-font {
-font-family: 'Black Ops One', Arial, sans-serif;
-font-size: 2rem;
-text-align: center;
-}
-
-.from-text {
-font-size: 1.6rem;
-margin-bottom: 0.75rem;
-}
-
-/* ---------- COLOR HIGHLIGHTS ---------- */
-
-.highlight-blue {
-color: rgb(240, 27, 151);
-}
-
-.link-highlight {
-color: #ffef00;
-}
-
-/* ---------- EVENT INFO ---------- */
-
-.event-info {
-max-width: 1200px;
-margin: 0 auto 3rem;
-padding: 0 1rem;
-text-align: center;
-}
-
-/* ===================================================== */
-/* AUTH FORM */
-/* ===================================================== */
+/* ---------- AUTH FORM ---------- */
 
 #auth-section {
 text-align: center;
@@ -189,9 +135,7 @@ transition: 0.2s ease;
 background-color: #ffe000;
 }
 
-/* ===================================================== */
-/* OPEN MIC SLOT LAYOUT (DESKTOP DEFAULT) */
-/* ===================================================== */
+/* ---------- SLOT LAYOUT (DESKTOP) ---------- */
 
 .slot-row {
 display: flex;
@@ -202,6 +146,7 @@ margin-top: 1.3rem;
 
 .slot-time {
 flex: 0 0 210px;
+font-weight: bold;
 }
 
 .slot-col:first-of-type {
@@ -230,9 +175,7 @@ box-sizing: border-box;
 box-shadow: 0 2px 4px rgba(0,0,0,0.08);
 }
 
-/* ===================================================== */
-/* MARKETING CHECKBOX */
-/* ===================================================== */
+/* ---------- MARKETING CHECKBOX ---------- */
 
 .marketing-check {
 display: flex;
@@ -253,12 +196,12 @@ cursor: pointer;
 }
 
 /* ===================================================== */
-/* MOBILE RESPONSIVE RULES */
+/* ✅ MOBILE RESPONSIVE */
 /* ===================================================== */
 
 @media (max-width: 900px) {
 
-/* ✅ Stack Nav */
+/* Stack nav */
 .top-nav {
 flex-direction: column;
 justify-content: center;
@@ -275,21 +218,18 @@ font-size: 1rem;
 margin: 3px 0;
 }
 
-/* ✅ Cleaner Mobile Slot Layout */
+/* ✅ Stack slots tightly */
 .slot-row {
 flex-direction: column;
-gap: 8px;              /* much tighter */
+gap: 10px;
 margin-top: 1rem;
-padding: 1rem;
-background: rgba(0,0,0,0.15);
-border-radius: 12px;
 }
 
 .slot-time {
 flex: none;
 width: 100%;
-font-size: 1.1rem;     /* smaller */
-margin-bottom: 2px;
+font-size: 1rem;
+padding: 10px 14px;
 }
 
 .slot-col {
@@ -298,38 +238,12 @@ width: 100%;
 }
 
 .slot-col textarea {
-min-height: 65px;      /* slightly tighter */
-}
-/* ✅ Tight Mobile Slot Card */
-
-.slot-row {
-    flex-direction: column;
-    gap: 6px;
-    margin-top: 0.8rem;
-    padding: 0;
+min-height: 65px;
 }
 
-.slot-time {
-    flex: none;
-    width: 100%;
-    padding: 0.8rem 1rem;   /* reduce padding */
-    font-size: 1rem;
-    border-radius: 10px;
 }
 
-.slot-col {
-    flex: none;
-    width: 100%;
-}
-
-.slot-col textarea {
-    margin-top: 4px;
-}
-}
-
-/* ===================================================== */
-/* WATERMARK */
-/* ===================================================== */
+/* ---------- WATERMARK ---------- */
 
 body::before {
 content: "";
