@@ -7,6 +7,48 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css" />
+
+    <style>
+
+        .contact-section {
+            text-align: center;
+            margin: 4rem auto;
+            padding: 0 1rem;
+        }
+
+        .contact-label {
+            font-family: 'Black Ops One', Arial, sans-serif;
+            font-size: 2.4rem;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .contact-email {
+            font-family: 'Black Ops One', Arial, sans-serif;
+            font-size: 2rem;
+            color: #ffffff;
+            margin-bottom: 3rem;
+            word-break: break-word;
+        }
+
+        .contact-qr img {
+            max-width: 260px;
+            width: 100%;
+            height: auto;
+        }
+
+        @media (max-width: 768px) {
+            .contact-label {
+                font-size: 2rem;
+            }
+
+            .contact-email {
+                font-size: 1.5rem;
+            }
+        }
+
+    </style>
+
 </head>
 <body>
 
@@ -25,14 +67,21 @@
 
 <h1 class="section-title">Contact</h1>
 
-<section class="event-info">
-    <p>Email: rebelliondogz@example.com</p>
-</section>
+<section class="contact-section">
 
-<footer>
-    © Rebellion Dogz
-</footer>
+    <div class="contact-label">
+        Email:
+    </div>
+
+    <div class="contact-email">
+        rebelliondogz@outlook.com
+    </div>
+
+    <div class="contact-qr">
+        <img src="images/rebdogz_email.png" alt="QR Code for Rebellion Dogz Email">
+    </div>
+
+</section>
 
 </body>
 </html>
-
