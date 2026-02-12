@@ -205,3 +205,24 @@ footer {
         height: 160px;
     }
 }
+/* ---------- WATERMARK ---------- */
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("images/watermark.png");
+    background-repeat: no-repeat;
+    background-position: center 60%;
+    background-size: 60%;
+    opacity: 0.08; /* adjust 0.05–0.12 as desired */
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Ensure content sits above watermark */
+
+body > * {
+    position: relative;
+    z-index: 1;
+}
