@@ -20,7 +20,7 @@
 .schedule-row {
     display: flex;
     align-items: flex-start;
-    justify-content: space-between;
+    justify-content: center;   /* center the trio */
     gap: 3rem;
 }
 
@@ -38,6 +38,20 @@
     flex: 0 0 350px;
     display: flex;
     justify-content: center;
+    align-items: flex-start;
+}
+
+/* ✅ Reorder for desktop: TEXT - IMAGE - TEXT */
+.schedule-column:first-of-type {
+    order: 1;
+}
+
+.schedule-image {
+    order: 2;
+}
+
+.schedule-column:last-of-type {
+    order: 3;
 }
 
 .schedule-image img {
@@ -61,7 +75,7 @@
     color: #ffef00;
 }
 
-/* ✅ Speaker details now SAME SIZE as title, white */
+/* Speaker details */
 .schedule-details {
     font-family: 'Black Ops One', Arial, sans-serif;
     font-size: 2rem;
@@ -69,7 +83,7 @@
     line-height: 1.4;
 }
 
-/* ✅ Fancy Pink Button */
+/* Fancy Pink Button */
 .signup-button {
     display: inline-block;
     margin-top: 1rem;
@@ -97,14 +111,25 @@
 /* Date black */
 .date-title {
     color: #000000;
+    text-align: center;
 }
 
 /* MOBILE STACK */
 @media (max-width: 1000px) {
+
     .schedule-row {
         flex-direction: column;
         align-items: center;
         gap: 2rem;
+    }
+
+    /* On mobile we want image after text */
+    .schedule-column:first-of-type {
+        order: 1;
+    }
+
+    .schedule-column:last-of-type {
+        order: 2;
     }
 
     .schedule-image {
