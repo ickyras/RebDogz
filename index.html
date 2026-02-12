@@ -6,7 +6,7 @@
 <title>Rebellion Dogz</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=7" />
+<link rel="stylesheet" href="styles.css?v=8" />
 
 <style>
   /* Quote styling */
@@ -42,21 +42,13 @@
   /* ✅ Main Image Control */
   .main-image {
     text-align: center;
-    margin: 2rem auto;
+    margin: 2rem 0;
   }
 
   .main-image img {
-    max-width: 100%;
+    width: 100%;      /* always fit container */
     height: auto;
-    width: 900px;          /* desktop cap */
-  }
-
-  /* ✅ Mobile image sizing */
-  @media (max-width: 900px) {
-    .main-image img {
-      width: 100%;
-      max-width: 450px;    /* prevents giant scaling */
-    }
+    display: block;
   }
 </style>
 
