@@ -2,56 +2,67 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Sign Up – Rebellion Dogz</title>
+  <title>Open Mic Sign Up – Rebellion Dogz</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- ADD THESE TWO LINES -->
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
+
+  <!-- Main Global Styles -->
   <link rel="stylesheet" href="styles.css">
 
+  <!-- Supabase -->
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
- <style>
+  <!-- Page-specific styles ONLY -->
+  <style>
     main {
-      padding: 2rem 1rem;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1rem 3rem;
     }
 
     input, button {
       width: 100%;
-      padding: 0.5rem;
-      margin-top: 0.5rem;
+      padding: 0.6rem;
+      margin-top: 0.6rem;
+      border-radius: 4px;
+      border: none;
     }
 
     button {
       cursor: pointer;
+      font-weight: bold;
     }
 
     .slot {
       display: block;
-      margin-top: 0.5rem;
+      margin-top: 0.6rem;
       text-align: left;
     }
 
     .booked {
-      background: #ddd;
+      background: #999;
       cursor: not-allowed;
+      color: #000;
     }
 
     .mine {
-      background: #ffeeba;
+      background: rgb(240, 27, 151);
+      color: #fff;
     }
 
     .disabled {
-      background: #eee;
-      color: #666;
+      background: #666;
+      color: #ccc;
       cursor: not-allowed;
     }
 
     .note {
       font-size: 0.9rem;
-      opacity: 0.8;
+      opacity: 0.85;
     }
-</style>
+  </style>
 </head>
 
 <body>
@@ -71,9 +82,38 @@
 
 <main class="event-info">
 
+<section id="auth-section">
+  <p class="note">
+    Register once with your email.  
+    Your email is used only for confirmation and is never shown publicly.
+  </p>
+
+  <label>
+    Display Name
+    <input id="displayName" />
+  </label>
+
+  <label>
+    Email Address
+    <input id="email" type="email" />
+  </label>
+
+  <button id="sendLink">Send Confirmation Link</button>
+  <p id="authMessage"></p>
+</section>
+
+<section id="slots-section">
+  <h2 class="section-title">Available Time Slots</h2>
+  <p class="note">You may select one time slot only.</p>
+  <div id="slots"></div>
+</section>
+
+</main>
+
 <script>
   const SUPABASE_URL = "https://pkfrmugpppbqetekagyh.supabase.co";
   const SUPABASE_ANON_KEY = "sb_publishable_kIDCRuBpvOWGgy54L685HQ_zuFa-PLM";
+
   const supabaseClient = supabase.createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
@@ -85,24 +125,15 @@
 
   let currentUser = null;
 
-  /*************************
-   * TIME FORMAT (UTC WALL TIME)
-   *************************/
   function formatWallTime(ts) {
     const d = new Date(ts);
-
     let hour = d.getUTCHours();
     const minute = d.getUTCMinutes();
-
     const ampm = hour >= 12 ? "PM" : "AM";
     hour = hour % 12 || 12;
-
     return `${hour}:${minute.toString().padStart(2, "0")} ${ampm}`;
   }
 
-  /*************************
-   * MAGIC LINK LOGIN
-   *************************/
   document.getElementById("sendLink").onclick = async () => {
     const emailValue = document.getElementById("email").value.trim();
     const displayNameValue = document.getElementById("displayName").value.trim();
@@ -126,9 +157,6 @@
       : "Check your email to confirm.";
   };
 
-  /*************************
-   * LOAD SLOTS
-   *************************/
   async function loadSlots() {
     slotsDiv.innerHTML = "";
 
@@ -143,7 +171,7 @@
       return;
     }
 
-    const { data: slots, error: slotsError } = await supabaseClient
+    const { data: slots } = await supabaseClient
       .from("time_slots")
       .select(`
         *,
@@ -154,8 +182,6 @@
       .eq("event_id", events[0].id)
       .order("starts_at");
 
-    console.log("SLOTS:", JSON.stringify(slots, null, 2));
-
     for (const slot of slots) {
       const btn = document.createElement("button");
       btn.className = "slot";
@@ -164,7 +190,6 @@
       const end = formatWallTime(slot.ends_at);
 
       if (slot.booked_by) {
-
         const name = slot.profiles?.display_name || "Booked";
 
         if (currentUser && slot.booked_by === currentUser.id) {
@@ -190,7 +215,6 @@
         }
 
       } else {
-
         if (!currentUser) {
           btn.textContent = `${start} – ${end}`;
           btn.disabled = true;
@@ -212,9 +236,6 @@
     }
   }
 
-  /*************************
-   * INIT
-   *************************/
   async function init() {
     const { data: { user } } = await supabaseClient.auth.getUser();
     currentUser = user || null;
@@ -240,5 +261,5 @@
   init();
 </script>
 
-
-
+</body>
+</html>
