@@ -1,92 +1,283 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Rebellion Dogz</title>
+  <meta charset="UTF-8" />
+  <title>Sign Up – Rebellion Dogz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css" />
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem;
+      border-bottom: 1px solid #ccc;
+    }
+
+    nav a {
+      margin-right: 1rem;
+      text-decoration: none;
+      font-weight: bold;
+      color: black;
+    }
+
+    main {
+      padding: 2rem 1rem;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .slot {
+      display: block;
+      margin-top: 0.5rem;
+      text-align: left;
+    }
+
+    .booked {
+      background: #ddd;
+      cursor: not-allowed;
+    }
+
+    .mine {
+      background: #ffeeba;
+    }
+
+    .disabled {
+      background: #eee;
+      color: #666;
+      cursor: not-allowed;
+    }
+
+    .note {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+  </style>
 </head>
+
 <body>
 
-<header class="site-header">
-<nav class="top-nav">
-    <img src="images/aa_logo.png" alt="Rebellion Dogz Logo" class="logo" />
-
-    <a href="index.html">Home</a>
-    <a href="our_current_event.html">Our Current Event</a>
-    <a href="signup.html">Open Mic Sign Up</a>
-    <a href="contact.html">Contact</a>
+<nav>
+  <div><a href="/RebDogz/">Rebellion Dogz</a></div>
+  <div>
+    <a href="/RebDogz/signup.html">Sign Up</a>
+  </div>
 </nav>
-    </nav>
 
-    <div class="brand-header">
-        <img src="images/rebdogz_font1.png" alt="Rebellion" class="brand-header-image" />
-        <img src="images/rebdogz_font2.png" alt="Dogz" class="brand-header-image" />
-    </div>
+<main>
 
-    <h2>Monthly Speaker Meeting</h2>
-</header>
+<h1>Monthly Speaker Sign Up</h1>
 
-<div class="main-image">
-    <img src="images/rebdogz_in_studio2.png" alt="Punk rock dogs in recording studio" />
-</div>
+<section id="auth-section">
+  <p class="note">
+    Register once with your email.  
+    Your email is used only for confirmation and is never shown publicly.
+  </p>
 
-<section class="event-info event-font">
+  <label>
+    Display name
+    <input id="displayName" />
+  </label>
 
-    <h1 class="section-title">Schedule of Events</h1>
+  <label>
+    Email address
+    <input id="email" type="email" />
+  </label>
 
-    <p class="event-text">Saturday, March 21st, 2026</p>
-
-    <div class="two-column">
-
-        <!-- LEFT COLUMN -->
-        <div class="column">
-            <p class="from-text">From 4:30pm to 6:30pm</p>
-
-            <p class="highlight-blue">Open Mic / No Talent Show</p>
-            <p>
-                Sign up
-                <a href="signup.html" class="inline-link">
-                    <span class="link-highlight">HERE</span>
-                </a>
-                for a 5 minute slot
-            </p>
-        </div>
-
-        <!-- RIGHT COLUMN -->
-        <div class="column">
-            <p class="from-text">From 7pm to 8:15pm</p>
-
-            <p class="highlight-blue">AA Speaker Meeting</p>
-
-            <p>
-                Short Speaker: Lauren A.<br>
-                Battle Ground, WA
-            </p>
-
-            <p>
-                Long Speaker: Alan W.<br>
-                Battle Ground, WA
-            </p>
-        </div>
-
-    </div>
-
-    <div class="location-section">
-        <p class="from-text">Location:</p>
-        <p>
-            Eastpark Church<br>
-            15815 NE 18th Street<br>
-            Vancouver, WA 98684
-        </p>
-    </div>
-
+  <button id="sendLink">Send Confirmation Link</button>
+  <p id="authMessage"></p>
 </section>
 
-<footer></footer>
+<section id="slots-section">
+  <h2>Available Time Slots</h2>
+  <p class="note">You may select one time slot only.</p>
+  <div id="slots"></div>
+</section>
 
-</body>
-</html>
+</main>
+
+<script>
+  const SUPABASE_URL = "https://pkfrmugpppbqetekagyh.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_kIDCRuBpvOWGgy54L685HQ_zuFa-PLM";
+  const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+  const slotsDiv = document.getElementById("slots");
+  const authSection = document.getElementById("auth-section");
+  const authMessage = document.getElementById("authMessage");
+
+  let currentUser = null;
+
+  /*************************
+   * TIME FORMAT (UTC WALL TIME)
+   *************************/
+  function formatWallTime(ts) {
+    const d = new Date(ts);
+
+    let hour = d.getUTCHours();
+    const minute = d.getUTCMinutes();
+
+    const ampm = hour >= 12 ? "PM" : "AM";
+    hour = hour % 12 || 12;
+
+    return `${hour}:${minute.toString().padStart(2, "0")} ${ampm}`;
+  }
+
+  /*************************
+   * MAGIC LINK LOGIN
+   *************************/
+  document.getElementById("sendLink").onclick = async () => {
+    const emailValue = document.getElementById("email").value.trim();
+    const displayNameValue = document.getElementById("displayName").value.trim();
+
+    if (!emailValue || !displayNameValue) {
+      authMessage.textContent = "Both fields required.";
+      return;
+    }
+
+    localStorage.setItem("display_name", displayNameValue);
+
+    const { error } = await supabaseClient.auth.signInWithOtp({
+      email: emailValue,
+      options: {
+        emailRedirectTo: "https://ickyras.github.io/RebDogz/signup.html"
+      }
+    });
+
+    authMessage.textContent = error
+      ? error.message
+      : "Check your email to confirm.";
+  };
+
+  /*************************
+   * LOAD SLOTS
+   *************************/
+  async function loadSlots() {
+    slotsDiv.innerHTML = "";
+
+    const { data: events } = await supabaseClient
+      .from("events")
+      .select("*")
+      .eq("signup_open", true)
+      .limit(1);
+
+    if (!events || !events.length) {
+      slotsDiv.textContent = "No open events.";
+      return;
+    }
+
+    const { data: slots, error: slotsError } = await supabaseClient
+      .from("time_slots")
+      .select(`
+        *,
+        profiles:booked_by (
+          display_name
+        )
+      `)
+      .eq("event_id", events[0].id)
+      .order("starts_at");
+
+    console.log("SLOTS:", JSON.stringify(slots, null, 2));
+
+    for (const slot of slots) {
+      const btn = document.createElement("button");
+      btn.className = "slot";
+
+      const start = formatWallTime(slot.starts_at);
+      const end = formatWallTime(slot.ends_at);
+
+      if (slot.booked_by) {
+
+        const name = slot.profiles?.display_name || "Booked";
+
+        if (currentUser && slot.booked_by === currentUser.id) {
+          btn.textContent = `${start} – ${end} (${name} – click to cancel)`;
+          btn.classList.add("mine");
+
+          btn.onclick = async () => {
+            const confirmed = confirm("Cancel your booking?");
+            if (!confirmed) return;
+
+            await supabaseClient
+              .from("time_slots")
+              .update({ booked_by: null })
+              .eq("id", slot.id);
+
+            loadSlots();
+          };
+
+        } else {
+          btn.textContent = `${start} – ${end} (${name})`;
+          btn.disabled = true;
+          btn.classList.add("booked");
+        }
+
+      } else {
+
+        if (!currentUser) {
+          btn.textContent = `${start} – ${end}`;
+          btn.disabled = true;
+          btn.classList.add("disabled");
+        } else {
+          btn.textContent = `${start} – ${end}`;
+          btn.onclick = async () => {
+            await supabaseClient
+              .from("time_slots")
+              .update({ booked_by: currentUser.id })
+              .eq("id", slot.id);
+
+            loadSlots();
+          };
+        }
+      }
+
+      slotsDiv.appendChild(btn);
+    }
+  }
+
+  /*************************
+   * INIT
+   *************************/
+  async function init() {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    currentUser = user || null;
+
+    if (currentUser) {
+      const storedName = localStorage.getItem("display_name");
+
+      if (storedName) {
+        await supabaseClient
+          .from("profiles")
+          .update({ display_name: storedName })
+          .eq("id", currentUser.id);
+
+        localStorage.removeItem("display_name");
+      }
+
+      authSection.style.display = "none";
+    }
+
+    loadSlots();
+  }
+
+  init();
+</script>
+
 
