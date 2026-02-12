@@ -252,7 +252,25 @@ margin-top: 6px;
 }
 
 }
+@media (max-width: 900px) {
 
+  /* Remove any inherited spacing */
+  .slot,
+  textarea {
+    margin-top: 4px !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* Control spacing between stacked elements */
+  .slot + textarea {
+    margin-top: 6px !important;
+  }
+
+  textarea + textarea {
+    margin-top: 6px !important;
+  }
+
+}
 /* ---------- WATERMARK ---------- */
 
 body::before {
