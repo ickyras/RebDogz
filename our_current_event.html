@@ -47,37 +47,54 @@
 
 /* TEXT STYLES */
 
-/* ✅ Times now black */
+/* Times black */
 .schedule-time {
     font-family: 'Black Ops One', Arial, sans-serif;
     font-size: 1.6rem;
     color: #000000;
 }
 
-/* Leave titles alone (yellow from your brand system) */
+/* Yellow event titles */
 .schedule-title {
     font-family: 'Black Ops One', Arial, sans-serif;
     font-size: 2rem;
     color: #ffef00;
 }
 
+/* ✅ Speaker details now SAME SIZE as title, white */
 .schedule-details {
-    font-size: 1.1rem;
-    line-height: 1.6;
+    font-family: 'Black Ops One', Arial, sans-serif;
+    font-size: 2rem;
+    color: #ffffff;
+    line-height: 1.4;
 }
 
-/* ✅ Bright pink signup link */
-.signup-pink {
+/* ✅ Fancy Pink Button */
+.signup-button {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.75rem 2rem;
+    font-family: 'Black Ops One', Arial, sans-serif;
+    font-size: 1.6rem;
     color: rgb(240, 27, 151);
-    font-weight: bold;
+    background: linear-gradient(
+        180deg,
+        #222 0%,
+        #111 100%
+    );
+    border: 3px solid rgb(240, 27, 151);
     text-decoration: none;
+    letter-spacing: 1px;
+    transition: all 0.2s ease;
 }
 
-.signup-pink:hover {
-    text-decoration: underline;
+.signup-button:hover {
+    background: rgb(240, 27, 151);
+    color: #000000;
+    transform: scale(1.05);
 }
 
-/* ✅ Date black to match location */
+/* Date black */
 .date-title {
     color: #000000;
 }
@@ -113,12 +130,10 @@
 
     <h1 class="section-title">Schedule of Events</h1>
 
-    <!-- ✅ Date now black -->
     <h2 class="date-title">
         Saturday, March 21st, 2026
     </h2>
 
-    <!-- Location already black from your CSS -->
     <h2 class="date-title">
         Eastpark Church · 15815 NE 18th Street · Vancouver, WA
     </h2>
@@ -141,9 +156,8 @@
                     Step up and share your talent.
                 </div>
 
-                <!-- ✅ Bright pink link -->
-                <a href="signup.html" class="signup-pink">
-                    Sign Up Here
+                <a href="signup.html" class="signup-button">
+                    SIGN UP HERE
                 </a>
             </div>
 
@@ -159,7 +173,7 @@
 
                 <div class="schedule-details">
                     Short Speaker: Lauren A.<br>
-                    from Battle Ground, WA <br>
+                    from Battle Ground, WA<br><br>
                     Long Speaker: Alan W.<br>
                     from Battle Ground, WA
                 </div>
