@@ -139,6 +139,42 @@ padding: 0 1rem;
 text-align: center;
 }
 
+/* ===================================================== */
+/* ✅ AUTH FORM SIZE ADJUSTMENT */
+/* ===================================================== */
+
+#auth-section {
+text-align: center;
+margin-bottom: 2rem;
+}
+
+#auth-section input {
+width: 280px;
+max-width: 90%;
+padding: 0.6rem;
+border-radius: 6px;
+border: none;
+margin-top: 0.4rem;
+}
+
+#sendLink {
+width: 280px;
+max-width: 90%;
+padding: 0.6rem;
+border-radius: 6px;
+border: none;
+background-color: #ffef00;
+color: #000;
+font-weight: bold;
+margin-top: 0.8rem;
+cursor: pointer;
+transition: 0.2s ease;
+}
+
+#sendLink:hover {
+background-color: #ffe000;
+}
+
 /* ---------- SCHEDULE 3 COLUMN LAYOUT ---------- */
 
 .schedule-container {
@@ -261,38 +297,33 @@ z-index: 1;
 }
 
 /* ===================================================== */
-/* ✅ OPEN MIC SIGNUP SLOT LAYOUT (FINAL FIX) */
+/* ✅ OPEN MIC SIGNUP SLOT LAYOUT */
 /* ===================================================== */
 
 .slot-row {
 display: flex;
-gap: 34px;                     /* stronger separation */
+gap: 34px;
 align-items: flex-start;
 margin-top: 1.3rem;
 }
 
-/* Time button */
 .slot-time {
 flex: 0 0 210px;
 }
 
-/* Type of Act column */
 .slot-col:first-of-type {
 flex: 0 0 260px;
 }
 
-/* Intro column */
 .slot-col:last-of-type {
 flex: 1;
 }
 
-/* Column container spacing */
 .slot-col {
 display: flex;
 flex-direction: column;
 }
 
-/* TEXTAREAS */
 .slot-col textarea {
 width: 100%;
 padding: 1rem 1.1rem;
@@ -301,7 +332,7 @@ border: 2px solid rgba(0,0,0,0.25);
 background-color: #f2f2f2;
 font-size: 1rem;
 resize: vertical;
-min-height: 75px;              /* clearly two lines */
+min-height: 75px;
 box-sizing: border-box;
 box-shadow: 0 2px 4px rgba(0,0,0,0.08);
 }
