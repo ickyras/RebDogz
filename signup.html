@@ -258,11 +258,13 @@ async function loadSlots() {
 
       } else {
 
-        const typeInput = document.createElement("input");
-        typeInput.placeholder = "Type of Act?";
+const typeInput = document.createElement("textarea");
+typeInput.placeholder = "Type of Act?";
+typeInput.rows = 2;
 
-        const introInput = document.createElement("input");
-        introInput.placeholder = "How would you like to be introduced?";
+const introInput = document.createElement("textarea");
+introInput.placeholder = "How would you like to be introduced?";
+introInput.rows = 2;
 
         typeCol.appendChild(typeInput);
         introCol.appendChild(introInput);

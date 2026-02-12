@@ -261,37 +261,39 @@ z-index: 1;
 }
 
 /* ===================================================== */
-/* ✅ OPEN MIC SIGNUP SLOT LAYOUT (FINAL ADJUSTED) */
+/* ✅ OPEN MIC SIGNUP SLOT LAYOUT (UPDATED) */
 /* ===================================================== */
 
 .slot-row {
 display: flex;
-gap: 22px;              /* more separation between boxes */
-align-items: center;
-margin-top: 0.9rem;
+gap: 30px;                 /* strong visual separation */
+align-items: flex-start;   /* align at top since fields are taller */
+margin-top: 1.1rem;
 }
 
 /* Time button */
 .slot-time {
-flex: 0 0 200px;        /* slightly wider for clean look */
+flex: 0 0 210px;
 }
 
-/* Type of Act (short answer) */
+/* Type of Act box */
 .slot-col:first-of-type {
-flex: 0 0 260px;        /* big enough for short answer */
+flex: 0 0 260px;
 }
 
-/* Introduction (longer answer) */
+/* Introduction box */
 .slot-col:last-of-type {
-flex: 1;                /* takes remaining space */
+flex: 1;
 }
 
-/* Inputs */
-.slot-col input {
+/* TEXTAREAS (2-line depth) */
+.slot-col textarea {
 width: 100%;
-padding: 0.7rem 1rem;   /* taller input */
-border-radius: 6px;
+padding: 0.9rem 1rem;
+border-radius: 8px;
 border: none;
 font-size: 1rem;
-min-height: 42px;       /* ensures comfortable typing space */
+resize: vertical;
+min-height: 70px;          /* two lines deep */
+box-sizing: border-box;
 }
