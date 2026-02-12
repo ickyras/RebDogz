@@ -41,17 +41,17 @@
     align-items: flex-start;
 }
 
-/* ✅ Reorder for desktop: TEXT - IMAGE - TEXT */
-.schedule-column:first-of-type {
-    order: 1;
+/* ✅ EXPLICIT DESKTOP ORDER: TEXT - IMAGE - TEXT */
+.schedule-row > div:nth-child(1) {
+    order: 1; /* Open Mic */
 }
 
-.schedule-image {
-    order: 2;
+.schedule-row > div:nth-child(3) {
+    order: 2; /* Image */
 }
 
-.schedule-column:last-of-type {
-    order: 3;
+.schedule-row > div:nth-child(2) {
+    order: 3; /* AA Speaker */
 }
 
 .schedule-image img {
@@ -153,7 +153,7 @@
 
 <section class="event-info">
 
-    <h1 class="section-title">Schedule of Events</h1>
+    <h1 class="section-title">Event Schedule and Location</h1>
 
     <h2 class="date-title">
         Saturday, March 21st, 2026
