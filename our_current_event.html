@@ -9,22 +9,22 @@
 
 <style>
 
-/* ---------- EVENT LAYOUT UPDATE ---------- */
+/* ---------- THREE COLUMN EVENT LAYOUT ---------- */
 
 .schedule-wrapper {
-    max-width: 1300px;
+    max-width: 1400px;
     margin: 0 auto 4rem;
-    padding: 0 1rem;
+    padding: 0 2rem;
 }
 
-/* Two columns side-by-side */
-.schedule-columns {
+.schedule-row {
     display: flex;
-    gap: 3rem;
     align-items: flex-start;
+    justify-content: space-between;
+    gap: 3rem;
 }
 
-/* Individual column */
+/* LEFT + MIDDLE TEXT COLUMNS */
 .schedule-column {
     flex: 1;
     display: flex;
@@ -33,6 +33,19 @@
     text-align: center;
 }
 
+/* RIGHT IMAGE COLUMN */
+.schedule-image {
+    flex: 0 0 350px;
+    display: flex;
+    justify-content: center;
+}
+
+.schedule-image img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* TEXT STYLES */
 .schedule-time {
     font-family: 'Black Ops One', Arial, sans-serif;
     font-size: 1.6rem;
@@ -50,31 +63,17 @@
     line-height: 1.6;
 }
 
-/* Image to the right */
-.schedule-image-right {
-    margin-top: 3rem;
-    display: flex;
-    justify-content: center;
-}
+/* MOBILE STACKING */
+@media (max-width: 1000px) {
+    .schedule-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+    }
 
-.schedule-image-right img {
-    max-width: 350px;
-    width: 100%;
-    height: auto;
-}
-
-/* Mobile stacking */
-@media (max-width: 900px) {
-
-.schedule-columns {
-    flex-direction: column;
-    gap: 2rem;
-}
-
-.schedule-image-right {
-    margin-top: 2rem;
-}
-
+    .schedule-image {
+        order: 3;
+    }
 }
 
 </style>
@@ -85,7 +84,6 @@
 
 <nav class="top-nav">
     <img src="images/aa_logo.png" alt="Rebellion Dogz Logo" class="logo" />
-
     <a href="index.html">Home</a>
     <a href="our_current_event.html">Our Current Event</a>
     <a href="signup.html">Open Mic Sign Up</a>
@@ -106,8 +104,7 @@
 
     <div class="schedule-wrapper">
 
-        <!-- TWO COLUMNS -->
-        <div class="schedule-columns">
+        <div class="schedule-row">
 
             <!-- LEFT COLUMN -->
             <div class="schedule-column">
@@ -128,7 +125,7 @@
                 </a>
             </div>
 
-            <!-- RIGHT COLUMN -->
+            <!-- MIDDLE COLUMN -->
             <div class="schedule-column">
                 <div class="schedule-time">
                     7:00 PM – 8:15 PM
@@ -144,11 +141,11 @@
                 </div>
             </div>
 
-        </div>
+            <!-- RIGHT IMAGE -->
+            <div class="schedule-image">
+                <img src="images/winston_suit.png" alt="Winston in Suit">
+            </div>
 
-        <!-- IMAGE BELOW COLUMNS, RIGHT ALIGNED VISUALLY -->
-        <div class="schedule-image-right">
-            <img src="images/winston_suit.png" alt="Winston in Suit">
         </div>
 
     </div>
