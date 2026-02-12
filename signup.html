@@ -11,22 +11,7 @@
 
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
-  <style>
-
-    nav {
-      display: flex;
-      justify-content: space-between;
-      padding: 1rem;
-      border-bottom: 1px solid #ccc;
-    }
-
-    nav a {
-      margin-right: 1rem;
-      text-decoration: none;
-      font-weight: bold;
-      color: black;
-    }
-
+ <style>
     main {
       padding: 2rem 1rem;
     }
@@ -66,49 +51,25 @@
       font-size: 0.9rem;
       opacity: 0.8;
     }
-  </style>
+</style>
 </head>
 
 <body>
 
-<nav>
-  <div><a href="/RebDogz/">Rebellion Dogz</a></div>
-  <div>
-    <a href="/RebDogz/signup.html">Sign Up</a>
-  </div>
-</nav>
+<header class="site-header">
+  <nav class="top-nav">
+      <img src="images/aa_logo.png" alt="Rebellion Dogz Logo" class="logo" />
 
-<main>
+      <a href="index.html">Home</a>
+      <a href="our_current_event.html">Our Current Event</a>
+      <a href="signup.html">Open Mic Sign Up</a>
+      <a href="contact.html">Contact</a>
+  </nav>
 
-<h1>Monthly Speaker Sign Up</h1>
+  <h1 class="section-title">Open Mic Sign Up</h1>
+</header>
 
-<section id="auth-section">
-  <p class="note">
-    Register once with your email.  
-    Your email is used only for confirmation and is never shown publicly.
-  </p>
-
-  <label>
-    Display name
-    <input id="displayName" />
-  </label>
-
-  <label>
-    Email address
-    <input id="email" type="email" />
-  </label>
-
-  <button id="sendLink">Send Confirmation Link</button>
-  <p id="authMessage"></p>
-</section>
-
-<section id="slots-section">
-  <h2>Available Time Slots</h2>
-  <p class="note">You may select one time slot only.</p>
-  <div id="slots"></div>
-</section>
-
-</main>
+<main class="event-info">
 
 <script>
   const SUPABASE_URL = "https://pkfrmugpppbqetekagyh.supabase.co";
