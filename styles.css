@@ -207,11 +207,7 @@ footer {
 }
 /* ---------- WATERMARK ---------- */
 
-.watermark {
-  position: relative;
-}
-
-.watermark::before {
+body::before {
   content: "";
   position: fixed;
   inset: 0;
@@ -221,5 +217,16 @@ footer {
   background-size: 80%;
   opacity: 0.08;
   pointer-events: none;
-  z-index: -1;   /* <-- key change */
+  z-index: 0;
+}
+
+/* Hide watermark on home page */
+body.home::before {
+  display: none;
+}
+
+/* Keep content above watermark */
+body > * {
+  position: relative;
+  z-index: 1;
 }
