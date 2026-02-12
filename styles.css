@@ -228,7 +228,7 @@ padding-bottom: 2rem;
     height: 160px;
 }
 
-/* ✅ Make slot layout stack on mobile */
+/* Stack slot rows vertically on mobile */
 .slot-row {
     flex-direction: column;
     align-items: stretch;
@@ -261,27 +261,37 @@ z-index: 1;
 }
 
 /* ===================================================== */
-/* ✅ OPEN MIC SIGNUP SLOT LAYOUT (NEW ADDITIONS ONLY) */
+/* ✅ OPEN MIC SIGNUP SLOT LAYOUT (FINAL ADJUSTED) */
 /* ===================================================== */
 
 .slot-row {
 display: flex;
-gap: 12px;
+gap: 22px;              /* more separation between boxes */
 align-items: center;
-margin-top: 0.75rem;
+margin-top: 0.9rem;
 }
 
+/* Time button */
 .slot-time {
-flex: 0 0 180px;
+flex: 0 0 200px;        /* slightly wider for clean look */
 }
 
-.slot-col {
-flex: 1;
+/* Type of Act (short answer) */
+.slot-col:first-of-type {
+flex: 0 0 260px;        /* big enough for short answer */
 }
 
+/* Introduction (longer answer) */
+.slot-col:last-of-type {
+flex: 1;                /* takes remaining space */
+}
+
+/* Inputs */
 .slot-col input {
 width: 100%;
-padding: 0.5rem;
-border-radius: 4px;
+padding: 0.7rem 1rem;   /* taller input */
+border-radius: 6px;
 border: none;
+font-size: 1rem;
+min-height: 42px;       /* ensures comfortable typing space */
 }
