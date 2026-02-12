@@ -249,12 +249,7 @@ padding: 0.6rem 0.8rem;
 margin-top: 4px;
 }
 
-}
-@media (max-width: 900px) {
-  * {
-    outline: 1px solid red;
-  }
-}
+
 /* ---------- WATERMARK ---------- */
 
 body::before {
