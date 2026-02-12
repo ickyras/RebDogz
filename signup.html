@@ -275,23 +275,19 @@ introInput.rows = 2;
         typeCol.appendChild(typeInput);
         introCol.appendChild(introInput);
 
-        timeBtn.onclick = async () => {
+timeBtn.onclick = async () => {
 
-          if (!typeInput.value.trim()) {
-            alert("Please enter your Type of Act.");
-            return;
-          }
+  await supabaseClient
+    .from("time_slots")
+    .update({
+      booked_by: currentUser.id,
+      type_of_act: typeInput.value.trim() || null,
+      introduction_text: introInput.value.trim() || null
+    })
+    .eq("id", slot.id);
 
-          await supabaseClient
-            .from("time_slots")
-            .update({
-              booked_by: currentUser.id,
-              type_of_act: typeInput.value.trim(),
-              introduction_text: introInput.value.trim()
-            })
-            .eq("id", slot.id);
-
-          loadSlots();
+  loadSlots();
+};
         };
       }
     }
