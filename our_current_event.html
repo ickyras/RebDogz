@@ -24,7 +24,7 @@
     gap: 3rem;
 }
 
-/* LEFT + MIDDLE TEXT COLUMNS */
+/* TEXT COLUMNS */
 .schedule-column {
     flex: 1;
     display: flex;
@@ -33,7 +33,7 @@
     text-align: center;
 }
 
-/* RIGHT IMAGE COLUMN */
+/* IMAGE COLUMN */
 .schedule-image {
     flex: 0 0 350px;
     display: flex;
@@ -46,12 +46,15 @@
 }
 
 /* TEXT STYLES */
+
+/* ✅ Times now black */
 .schedule-time {
     font-family: 'Black Ops One', Arial, sans-serif;
     font-size: 1.6rem;
-    color: rgb(240, 27, 151);
+    color: #000000;
 }
 
+/* Leave titles alone (yellow from your brand system) */
 .schedule-title {
     font-family: 'Black Ops One', Arial, sans-serif;
     font-size: 2rem;
@@ -63,7 +66,23 @@
     line-height: 1.6;
 }
 
-/* MOBILE STACKING */
+/* ✅ Bright pink signup link */
+.signup-pink {
+    color: rgb(240, 27, 151);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.signup-pink:hover {
+    text-decoration: underline;
+}
+
+/* ✅ Date black to match location */
+.date-title {
+    color: #000000;
+}
+
+/* MOBILE STACK */
 @media (max-width: 1000px) {
     .schedule-row {
         flex-direction: column;
@@ -94,10 +113,12 @@
 
     <h1 class="section-title">Schedule of Events</h1>
 
-    <h2 class="date-title highlight-blue">
+    <!-- ✅ Date now black -->
+    <h2 class="date-title">
         Saturday, March 21st, 2026
     </h2>
 
+    <!-- Location already black from your CSS -->
     <h2 class="date-title">
         Eastpark Church · 15815 NE 18th Street · Vancouver, WA
     </h2>
@@ -120,7 +141,8 @@
                     Step up and share your talent.
                 </div>
 
-                <a href="signup.html" class="inline-link link-highlight">
+                <!-- ✅ Bright pink link -->
+                <a href="signup.html" class="signup-pink">
                     Sign Up Here
                 </a>
             </div>
@@ -137,7 +159,8 @@
 
                 <div class="schedule-details">
                     Short Speaker: Lauren A.<br>
-                    Long Speaker: Alan W.
+                    Long Speaker: Alan W.<br>
+                    from Battle Ground
                 </div>
             </div>
 
