@@ -266,38 +266,24 @@ opacity: 0.7;
 padding-bottom: 2rem;
 }
 
-/* ---------- MOBILE ---------- */
-
-@media (max-width: 900px) {
-
-.schedule-container {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-}
-
-.brand-header-image {
-    height: 160px;
-}
-
 /* ✅ Mobile Nav Layout Fix */
 .top-nav {
+    display: flex;
     flex-direction: column;
+    justify-content: center;   /* override space-evenly */
     align-items: center;
-    gap: 10px;
-}
-
-.top-nav .logo {
-    max-width: 140px;
-}
-
-.top-nav a {
-    font-size: 1rem;
+    gap: 8px;
+    padding: 0.8rem 0;
 }
 
 .top-nav a {
     display: inline-block;
-    margin: 4px 10px;
+    font-size: 1rem;
+    margin: 4px 0;
 }
+
+.top-nav .logo {
+    max-width: 140px;
 }
 
 /* ---------- WATERMARK ---------- */
