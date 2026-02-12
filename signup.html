@@ -40,25 +40,18 @@
     display: block;
     width: 100%;
     margin-top: 0.4rem;
-
     padding: 12px 16px;
     font-size: 16px;
     line-height: 1.2;
-
     background: #e0e0e0;
     color: #000;
-
     border-radius: 10px;
     border: none;
-
     text-align: center;
-
-    /* Remove mobile default button styling */
     appearance: none;
     -webkit-appearance: none;
   }
 
-  /* Compact mobile tuning */
   @media (max-width: 900px) {
     .slot {
       padding: 14px 16px;
@@ -88,28 +81,32 @@
     font-size: 0.9rem;
     opacity: 0.85;
   }
+
+  /* ✅ NEW: Yellow email warning text */
+  .email-warning {
+    color: #ffef00;
+    text-align: center;
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+  }
+
   /* ✅ Mobile-only textarea spacing fix */
-@media (max-width: 900px) {
+  @media (max-width: 900px) {
 
-  textarea {
-    margin-top: 0.25rem !important;
-    min-height: 60px !important;
+    textarea {
+      margin-top: 0.25rem !important;
+      min-height: 60px !important;
+    }
+
+    label {
+      margin-bottom: 0.3rem;
+      display: block;
+    }
+
+    textarea {
+      margin-top: 0.2rem !important;
+    }
   }
-
-}
-@media (max-width: 900px) {
-
-  /* Reduce vertical spacing between form rows */
-  label {
-    margin-bottom: 0.3rem;
-    display: block;
-  }
-
-  textarea {
-    margin-top: 0.2rem !important;
-  }
-
-}
 </style>
 </head>
 
@@ -152,9 +149,16 @@
   </label>
 
   <button id="sendLink">Send Confirmation Link</button>
+
+  <!-- ✅ NEW LINE ADDED -->
+  <div class="email-warning">
+    If the email is not in your inbox, <br>
+    be sure and check your junk file.
+  </div>
+
 </div>
 
-  <p id="authMessage"></p>
+<p id="authMessage"></p>
 </section>
 
 <section id="slots-section">
