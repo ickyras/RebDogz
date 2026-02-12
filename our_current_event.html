@@ -1,44 +1,112 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Current Event – Rebellion Dogz</title>
-<link rel="stylesheet" href="styles.css" />
-</head>
+<style>
+.event-container {
+    max-width: 1300px;
+    margin: 80px auto;
+    padding: 0 40px;
 
-<body class="watermark-page">
+    display: grid;
+    grid-template-columns: 1fr 350px 1fr;
+    align-items: start;
+    gap: 60px;
+}
 
-<nav class="top-nav">
-    <img src="images/aa_logo.png" alt="Rebellion Dogz Logo" class="logo" />
+/* VERTICAL TEXT COLUMNS */
 
-    <a href="index.html">Home</a>
-    <a href="our_current_event.html">Our Current Event</a>
-    <a href="signup.html">Open Mic Sign Up</a>
-    <a href="contact.html">Contact</a>
-</nav>
+.event-column {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
 
-<section class="event-info">
-<h1 class="section-title">Schedule of Events</h1>
-<p>Saturday, March 21st, 2026</p>
+.event-time {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: #e10600;
+    letter-spacing: 1px;
+}
 
-<p><strong>4:30pm – 6:30pm</strong><br>
-Open Mic / No Talent Show<br>
-<a href="signup.html">Sign Up Here</a>
-</p>
+.event-title {
+    font-size: 2rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    line-height: 1.2;
+}
 
-<p><strong>7pm – 8:15pm</strong><br>
-AA Speaker Meeting<br>
-Short Speaker: Lauren A.<br>
-Long Speaker: Alan W.
-</p>
+.event-details {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #ddd;
+}
 
-<p>
-Eastpark Church<br>
-15815 NE 18th Street<br>
-Vancouver, WA
-</p>
+.signup-link {
+    display: inline-block;
+    margin-top: 20px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #e10600;
+    border-bottom: 2px solid #e10600;
+    padding-bottom: 4px;
+    transition: 0.3s;
+}
+
+.signup-link:hover {
+    color: white;
+    border-color: white;
+}
+
+/* CENTER IMAGE */
+
+.center-image {
+    display: flex;
+    justify-content: center;
+}
+
+.center-image img {
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+}
+
+/* MOBILE STACK */
+
+@media (max-width: 900px) {
+    .event-container {
+        grid-template-columns: 1fr;
+        gap: 50px;
+        text-align: center;
+    }
+
+    .center-image {
+        order: 2;
+    }
+}
+</style>
+
+<section class="event-container">
+
+    <!-- LEFT COLUMN -->
+    <div class="event-column">
+        <div class="event-time">4:30 PM – 6:30 PM</div>
+        <div class="event-title">Open Mic / No Talent Show</div>
+        <div class="event-details">
+            Step up and share. Music, comedy, spoken word — no experience required.
+        </div>
+        <a href="signup.html" class="signup-link">Sign Up Here</a>
+    </div>
+
+    <!-- CENTER IMAGE -->
+    <div class="center-image">
+        <img src="images/winston_suit.png" alt="Winston in Suit">
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="event-column">
+        <div class="event-time">7:00 PM – 8:15 PM</div>
+        <div class="event-title">AA Speaker Meeting</div>
+        <div class="event-details">
+            Short Speaker: Lauren A.<br>
+            Long Speaker: Alan W.
+        </div>
+    </div>
+
 </section>
-
-</body>
-</html>

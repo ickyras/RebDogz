@@ -230,3 +230,57 @@ body > * {
   position: relative;
   z-index: 1;
 }
+/* ---------- SCHEDULE 3 COLUMN LAYOUT ---------- */
+
+.schedule-container {
+    display: grid;
+    grid-template-columns: 1fr 320px 1fr;
+    gap: 3rem;
+    align-items: start;
+    margin-top: 2.5rem;
+}
+
+.schedule-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    text-align: center;
+}
+
+.schedule-time {
+    font-family: 'Black Ops One', Arial, sans-serif;
+    font-size: 1.6rem;
+    color: rgb(240, 27, 151);
+    letter-spacing: 1px;
+}
+
+.schedule-title {
+    font-family: 'Black Ops One', Arial, sans-serif;
+    font-size: 2rem;
+    color: #ffef00;
+    line-height: 1.2;
+}
+
+.schedule-details {
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.schedule-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.schedule-image img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Stack on mobile */
+@media (max-width: 900px) {
+    .schedule-container {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+}
