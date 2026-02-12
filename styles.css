@@ -86,6 +86,21 @@ text-align: center;
 margin: 2rem 0 1.5rem;
 }
 
+/* ✅ RESTORE CENTERED EVENT CONTAINER */
+.event-info {
+max-width: 1200px;
+margin: 0 auto 3rem;
+padding: 0 1rem;
+text-align: center;
+}
+
+/* ✅ Force date + location centered */
+.date-title {
+text-align: center;
+margin-left: auto;
+margin-right: auto;
+}
+
 /* ---------- AUTH FORM ---------- */
 
 #auth-section {
@@ -201,66 +216,51 @@ cursor: pointer;
 
 @media (max-width: 900px) {
 
-/* =========================
-   NAV STACK
-========================= */
-
 .top-nav {
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+gap: 6px;
 }
 
 .top-nav .logo {
-  max-width: 140px;
+max-width: 140px;
 }
 
 .top-nav a {
-  font-size: 1rem;
-  margin: 3px 0;
+font-size: 1rem;
+margin: 3px 0;
 }
 
-
-/* =========================
-   SLOT STACK (STRUCTURAL RESET)
-========================= */
-
-/* Kill desktop horizontal spacing completely */
 .slot-row {
-  display: block;          /* remove flex entirely */
-  margin-top: 0.5rem;
+display: block;
+margin-top: 0.5rem;
 }
 
-/* Control spacing between rows */
 .slot-row + .slot-row {
-  margin-top: 0.75rem;
+margin-top: 0.75rem;
 }
 
-/* Time block */
 .slot-time {
-  width: 100%;
-  font-size: 1rem;
-  padding: 10px 14px;
-  margin-bottom: 6px;
+width: 100%;
+font-size: 1rem;
+padding: 10px 14px;
+margin-bottom: 6px;
 }
 
-/* Each textarea wrapper */
 .slot-col {
-  width: 100%;
-  margin: 0 0 6px 0;       /* manual spacing control */
+width: 100%;
+margin: 0 0 6px 0;
 }
 
-/* Textareas */
 .slot-col textarea {
-  width: 100%;
-  min-height: 55px;
-  padding: 0.6rem 0.8rem;
-  margin: 0;               /* remove stacking margin */
+width: 100%;
+min-height: 55px;
+padding: 0.6rem 0.8rem;
+margin: 0;
 }
 
 }
-
 
 /* ---------- WATERMARK ---------- */
 
