@@ -221,8 +221,13 @@ margin: 3px 0;
 /* ✅ Stack slots tightly */
 .slot-row {
 flex-direction: column;
-gap: 6px;              /* reduced from 10px */
-margin-top: 0.8rem;    /* slightly tighter */
+gap: 6px;
+margin-top: 0.4rem;   /* reduced from 0.8rem */
+}
+
+/* ✅ Remove extra space between rows */
+.slot-row + .slot-row {
+margin-top: 0.4rem;   /* controls spacing between time blocks */
 }
 
 .slot-time {
@@ -232,43 +237,17 @@ font-size: 1rem;
 padding: 10px 14px;
 }
 
-/* ✅ Ensure no extra spacing from column wrapper */
 .slot-col {
 flex: none;
 width: 100%;
-margin: 0;             /* prevent inherited margin stacking */
+margin: 0;
 }
 
-/* ✅ Tighten textarea spacing specifically */
 .slot-col textarea {
-min-height: 55px;      /* reduced height */
+min-height: 55px;
 padding: 0.6rem 0.8rem;
-margin-top: 4px;       /* small controlled gap */
+margin-top: 4px;
 }
-
-/* ✅ Remove accidental extra gap between stacked textareas */
-.slot-col textarea + textarea {
-margin-top: 6px;
-}
-
-}
-@media (max-width: 900px) {
-
-  /* Remove any inherited spacing */
-  .slot,
-  textarea {
-    margin-top: 4px !important;
-    margin-bottom: 0 !important;
-  }
-
-  /* Control spacing between stacked elements */
-  .slot + textarea {
-    margin-top: 6px !important;
-  }
-
-  textarea + textarea {
-    margin-top: 6px !important;
-  }
 
 }
 /* ---------- WATERMARK ---------- */
