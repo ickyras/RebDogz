@@ -213,3 +213,12 @@ footer {
 .logo {
     filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
 }
+/* ---------- CONSISTENT NAV SPACING ---------- */
+
+.site-header {
+    padding-top: 1rem;
+}
+
+.top-nav {
+    margin-top: 1rem;
+}
