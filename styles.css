@@ -349,3 +349,19 @@ min-height: 75px;
 box-sizing: border-box;
 box-shadow: 0 2px 4px rgba(0,0,0,0.08);
 }
+/* ---------- MARKETING OPT-IN CHECKBOX ---------- */
+
+.marketing-check {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+font-size: 1rem;
+font-weight: bold;
+margin-top: 8px;
+}
+
+.marketing-check input {
+transform: scale(1.2);
+cursor: pointer;
+}
