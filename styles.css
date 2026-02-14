@@ -89,8 +89,8 @@ margin: 2rem 0 1.5rem;
 /* ✅ RESTORE CENTERED EVENT CONTAINER */
 .event-info {
 max-width: 2000px;
-margin: 0 auto 3rem;
-padding: 0 2rem;
+margin: 0 auto 2rem;
+padding: 0 1rem;
 text-align: center;
 }
 
