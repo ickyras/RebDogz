@@ -1,8 +1,174 @@
-<h1>Listen</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rebellion Dogz | Archive</title>
 
-<audio controls>
-  <source src="audio/mysong.mp3" type="audio/mpeg">
-  Your browser does not support the audio element.
-</audio>
+<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=8" />
 
-<p><a href="audio/mysong.mp3" download>Download the MP3</a></p>
+<style>
+  .archive-page-content {
+    max-width: 1100px;
+    margin: 2rem auto 3rem;
+    padding: 0 1rem;
+  }
+
+  .archive-title {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: black;
+  }
+
+  .player-panel {
+    background: rgba(255, 255, 255, 0.72);
+    border-radius: 14px;
+    padding: 1.25rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .now-playing-label {
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    color: black;
+  }
+
+  .now-playing-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: black;
+  }
+
+  .archive-player {
+    width: 100%;
+  }
+
+  .archive-table-wrap {
+    background: rgba(255, 255, 255, 0.72);
+    border-radius: 14px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow-x: auto;
+  }
+
+  .archive-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .archive-table td {
+    text-align: left;
+    padding: 0.9rem 0.75rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+    color: black;
+    vertical-align: middle;
+  }
+
+  .archive-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .play-btn,
+  .download-btn {
+    display: inline-block;
+    padding: 0.45rem 0.8rem;
+    border-radius: 6px;
+    border: 1px solid black;
+    background: white;
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+  }
+
+  .play-btn:hover,
+  .download-btn:hover {
+    background: #f3f3f3;
+  }
+
+  @media (max-width: 700px) {
+    .archive-table td {
+      padding: 0.7rem 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .archive-actions {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
+</head>
+
+<body class="home archive-page">
+
+<header class="site-header">
+  <nav class="top-nav">
+    <img src="images/aa_logo.png" alt="Rebellion Dogz Logo" class="logo" />
+
+    <a href="index.html">Home</a>
+    <a href="our_current_event.html">Our Current Event</a>
+    <a href="archive.html">Archive</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+
+<main class="archive-page-content">
+  <h1 class="archive-title">Speaker Archive</h1>
+
+  <section class="player-panel">
+    <div class="now-playing-label">Now Playing:</div>
+    <div class="now-playing-title" id="nowPlayingTitle">Select a recording below</div>
+
+    <audio id="archivePlayer" class="archive-player" controls preload="none">
+      <source id="archiveSource" src="" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  </section>
+
+  <section class="archive-table-wrap">
+    <table class="archive-table">
+      <tbody>
+        <tr>
+          <td>
+            <div class="archive-actions">
+              <button
+                class="play-btn"
+                onclick="playRecording('audio/03.21.26_Lauren_A_Charles_G.mp3', 'Lauren A & Charles G - 03.21.26')"
+              >
+                Play
+              </button>
+              <a class="download-btn" href="audio/03.21.26_Lauren_A_Charles_G.mp3" download>
+                Download
+              </a>
+            </div>
+          </td>
+          <td>Lauren A &amp; Charles G</td>
+          <td>03.21.26</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+
+<script>
+  function playRecording(filePath, titleText) {
+    const player = document.getElementById('archivePlayer');
+    const source = document.getElementById('archiveSource');
+    const nowPlayingTitle = document.getElementById('nowPlayingTitle');
+
+    source.src = filePath;
+    nowPlayingTitle.textContent = titleText;
+
+    player.load();
+    player.play();
+  }
+</script>
+
+</body>
+</html>
