@@ -49,6 +49,7 @@
 .secondary-image {
     max-width: 80%;
     height: auto;
+    margin: 1.5rem auto 0;
 }
 
 .schedule-row > div:nth-child(1) { order: 1; }
@@ -92,10 +93,17 @@
     text-align: center;
 }
 
-/* ✅ NEW BUTTON STYLE */
+.flyer-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/* BUTTON STYLE */
 .flyer-button {
     display: inline-block;
-    margin-top: 2rem;
     padding: 0.8rem 1.5rem;
     font-family: 'Black Ops One', Arial, sans-serif;
     font-size: 1.2rem;
@@ -104,6 +112,7 @@
     text-decoration: none;
     border-radius: 6px;
     transition: all 0.3s ease;
+    text-align: center;
 }
 
 .flyer-button:hover {
@@ -166,8 +175,8 @@
                 </div>
 
                 <div class="schedule-note">
-                    This is a FREE event. Beverage Sales available, free coffee and water, and a 
-                    <span class="pink-highlight">DESSERT POT LUCK</span>. 
+                    This is a FREE event. Beverage Sales available, free coffee and water, and a
+                    <span class="pink-highlight">DESSERT POT LUCK</span>.
                     Please bring an item to share if you can. Anything left over will be donated to COUVE COLLECTIVE, a recovery cafe in Vancouver.
                 </div>
 
@@ -201,17 +210,22 @@
                     from Vancouver, WA
                 </div>
 
-                <!-- ✅ BUTTON ADDED BELOW THAILAND -->
-                <a href="images/flier1.pdf" target="_blank" class="flyer-button">
-                    Click Here for Current Flier
-                </a>
-
+                <img src="images/No_ADW.png" alt="No Alcohol Drugs or Weapons Notice" class="secondary-image">
             </div>
 
-            <!-- RIGHT IMAGE -->
+            <!-- RIGHT IMAGE / FLYERS -->
             <div class="schedule-image">
                 <img src="images/winston_suit.png" alt="Winston in Suit">
-                <img src="images/No_ADW.png" alt="No Alcohol Drugs or Weapons Notice" class="secondary-image">
+
+                <div class="flyer-buttons">
+                    <a href="images/flier1.pdf" target="_blank" class="flyer-button">
+                        Click Here for Current Flyer
+                    </a>
+
+                    <a href="images/May_2026_flyer.pdf" target="_blank" class="flyer-button">
+                        Flyer for May, 2026
+                    </a>
+                </div>
             </div>
 
         </div>
