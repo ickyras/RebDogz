@@ -42,8 +42,20 @@
     color: black;
   }
 
-  .archive-player {
+  .archive-embed-wrap {
     width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+  }
+
+  .archive-embed {
+    display: block;
+    width: 100%;
+    height: 180px;
+    border: 0;
+    background: white;
   }
 
   .archive-table-wrap {
@@ -101,6 +113,10 @@
       flex-direction: column;
       align-items: flex-start;
     }
+
+    .archive-embed {
+      height: 200px;
+    }
   }
 </style>
 </head>
@@ -125,10 +141,15 @@
     <div class="now-playing-label">To Play Here:</div>
     <div class="now-playing-title" id="nowPlayingTitle">Select a recording below</div>
 
-    <audio id="archivePlayer" class="archive-player" controls preload="none">
-      <source id="archiveSource" src="" type="audio/mpeg">
-      Your browser does not support the audio element.
-    </audio>
+    <div class="archive-embed-wrap">
+      <iframe
+        id="archiveEmbed"
+        class="archive-embed"
+        src=""
+        allow="autoplay"
+        loading="lazy"
+      ></iframe>
+    </div>
   </section>
 
   <section class="archive-table-wrap">
@@ -139,11 +160,18 @@
             <div class="archive-actions">
               <button
                 class="play-btn"
-                onclick="playRecording('audio/03.21.26_Lauren_A_&_Charles_G.mp3', 'Lauren A & Charles G - 03.21.26')"
+                onclick="playRecording(
+                  'https://archive.org/embed/03.21.26-lauren-a-charles-g',
+                  'Lauren A & Charles G - 03.21.26'
+                )"
               >
                 Play
               </button>
-              <a class="download-btn" href="audio/03.21.26_Lauren_A_&_Charles_G.mp3" download>
+              <a
+                class="download-btn"
+                href="https://archive.org/download/03.21.26-lauren-a-charles-g/03.21.26_Lauren_A_%26_Charles_G.mp3"
+                download
+              >
                 Download
               </a>
             </div>
@@ -151,22 +179,43 @@
           <td>Lauren A &amp; Charles G</td>
           <td>Saturday, March 21st, 2026</td>
         </tr>
+
+        <tr>
+          <td>
+            <div class="archive-actions">
+              <button
+                class="play-btn"
+                onclick="playRecording(
+                  'https://archive.org/embed/04.18.26-steven-r-julie-u',
+                  'Steven R & Julie U - 04.18.26'
+                )"
+              >
+                Play
+              </button>
+              <a
+                class="download-btn"
+                href="https://archive.org/download/04.18.26-steven-r-julie-u/04.18.26_Steven_R_%26_Julie_U.mp3"
+                download
+              >
+                Download
+              </a>
+            </div>
+          </td>
+          <td>Steven R &amp; Julie U</td>
+          <td>Saturday, April 18th, 2026</td>
+        </tr>
       </tbody>
     </table>
   </section>
 </main>
 
 <script>
-  function playRecording(filePath, titleText) {
-    const player = document.getElementById('archivePlayer');
-    const source = document.getElementById('archiveSource');
+  function playRecording(embedUrl, titleText) {
+    const archiveEmbed = document.getElementById('archiveEmbed');
     const nowPlayingTitle = document.getElementById('nowPlayingTitle');
 
-    source.src = filePath;
+    archiveEmbed.src = embedUrl;
     nowPlayingTitle.textContent = titleText;
-
-    player.load();
-    player.play();
   }
 </script>
 
