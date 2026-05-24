@@ -103,15 +103,6 @@
     background: #f3f3f3;
   }
 
-  .play-btn-disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-  }
-
-  .play-btn-disabled:hover {
-    background: white;
-  }
-
   @media (max-width: 700px) {
     .archive-table td {
       padding: 0.7rem 0.5rem;
@@ -169,10 +160,11 @@
           <td>
             <div class="archive-actions">
               <button
-                class="play-btn play-btn-disabled"
-                type="button"
-                disabled
-                title="Play link pending"
+                class="play-btn"
+                onclick="playRecording(
+                  'https://archive.org/embed/05.16.26-open-mic',
+                  'Open Mic - 05.16.26'
+                )"
               >
                 Play
               </button>
