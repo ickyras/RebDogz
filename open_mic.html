@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Rebellion Dogz | Archive</title>
+<title>Rebellion Dogz | Open Mic Archive</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css?v=8" />
@@ -103,6 +103,15 @@
     background: #f3f3f3;
   }
 
+  .play-btn-disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .play-btn-disabled:hover {
+    background: white;
+  }
+
   @media (max-width: 700px) {
     .archive-table td {
       padding: 0.7rem 0.5rem;
@@ -136,7 +145,7 @@
 </header>
 
 <main class="archive-page-content">
-  <h1 class="archive-title">Speaker Archive</h1>
+  <h1 class="archive-title">Open Mic Archive</h1>
 
   <section class="player-panel">
     <div class="now-playing-label">To Play Here:</div>
@@ -160,74 +169,23 @@
           <td>
             <div class="archive-actions">
               <button
-                class="play-btn"
-                onclick="playRecording(
-                  'https://archive.org/embed/03.21.26-lauren-a-charles-g',
-                  'Lauren A & Charles G - 03.21.26'
-                )"
+                class="play-btn play-btn-disabled"
+                type="button"
+                disabled
+                title="Play link pending"
               >
                 Play
               </button>
               <a
                 class="download-btn"
-                href="https://www.dropbox.com/scl/fi/ehypmgu89y1a79wro43t5/03.21.26_Lauren_A_-_Charles_G.mp3?rlkey=r6eh6gd0yf4cewq06mbrhio6c&st=layvpq49&dl=1"
+                href="https://www.dropbox.com/scl/fi/2gyp4x3uvadfwtgz0sijq/05.16.26_open_mic.mp3?rlkey=2w1pz5w8ehzh014mjflcnc2d8&st=gx5dsrb7&dl=1"
                 download
               >
                 Download
               </a>
             </div>
           </td>
-          <td>Lauren A &amp; Charles G</td>
-          <td>Saturday, March 21st, 2026</td>
-        </tr>
-
-        <tr>
-          <td>
-            <div class="archive-actions">
-              <button
-                class="play-btn"
-                onclick="playRecording(
-                  'https://archive.org/embed/04.18.26-steven-r-julie-u',
-                  'Steven R & Julie U - 04.18.26'
-                )"
-              >
-                Play
-              </button>
-              <a
-                class="download-btn"
-                href="https://www.dropbox.com/scl/fi/5bpxw0ycb74mkrv1qk7f0/04.18.26_Steven_R_-_Julie_U.mp3?rlkey=e9f5ec9130k1c6u5w3hc00khg&st=thii7y50&dl=1"
-                download
-              >
-                Download
-              </a>
-            </div>
-          </td>
-          <td>Steven R &amp; Julie U</td>
-          <td>Saturday, April 18th, 2026</td>
-        </tr>
-
-        <tr>
-          <td>
-            <div class="archive-actions">
-              <button
-                class="play-btn"
-                onclick="playRecording(
-                  'https://archive.org/embed/05.16.26-rose-b-al-m',
-                  'Rose B & Al M - 05.16.26'
-                )"
-              >
-                Play
-              </button>
-              <a
-                class="download-btn"
-                href="https://www.dropbox.com/scl/fi/mreh35d0l9cd68etm8ozy/05.16.26_Rose_B_-_Al_M.mp3?rlkey=e0cqhyc88rko40gugxj2kz8tg&st=3eedsso2&dl=1"
-                download
-              >
-                Download
-              </a>
-            </div>
-          </td>
-          <td>Rose B &amp; Al M</td>
+          <td>Open Mic</td>
           <td>Saturday, May 16th, 2026</td>
         </tr>
       </tbody>
