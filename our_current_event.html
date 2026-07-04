@@ -1,237 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Current Event – Rebellion Dogz</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rebellion Dogz | Our Current Event</title>
 
-<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=8" />
 
 <style>
-
-/* ---------- THREE COLUMN EVENT LAYOUT ---------- */
-
-.schedule-wrapper {
-    max-width: 1800px;
-    margin: 0 auto 4rem;
-    padding: 0 2rem;
-}
-
-.schedule-row {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 3rem;
-}
-
-.schedule-column {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+  .event-page-content {
+    max-width: 1100px;
+    margin: 2rem auto 3rem;
+    padding: 0 1rem;
     text-align: center;
-}
+  }
 
-/* Stack images vertically */
-.schedule-image {
-    flex: 0 0 350px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-}
+  .event-title {
+    color: black;
+    margin-bottom: 1rem;
+  }
 
-.schedule-image img {
-    max-width: 100%;
-    height: auto;
-}
+  .pdf-wrap {
+    width: 100%;
+    height: 80vh;
+    background: rgba(255, 255, 255, 0.72);
+    border-radius: 14px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
 
-.secondary-image {
-    max-width: 80%;
-    height: auto;
-    margin: 1.5rem auto 0;
-}
+  .pdf-frame {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: white;
+  }
 
-.schedule-row > div:nth-child(1) { order: 1; }
-.schedule-row > div:nth-child(3) { order: 2; }
-.schedule-row > div:nth-child(2) { order: 3; }
-
-/* TEXT STYLES */
-
-.schedule-time {
-    font-family: 'Black Ops One', Arial, sans-serif;
-    font-size: 1.6rem;
-    color: #000000;
-}
-
-.schedule-title {
-    font-family: 'Black Ops One', Arial, sans-serif;
-    font-size: 2rem;
-    color: #ffef00;
-}
-
-.schedule-details {
-    font-family: 'Black Ops One', Arial, sans-serif;
-    font-size: 2rem;
-    color: #ffffff;
-    line-height: 1.4;
-}
-
-.schedule-note {
-    font-family: 'Black Ops One', Arial, sans-serif;
-    font-size: 1.3rem;
-    color: #ffef00;
-    line-height: 1.4;
-}
-
-.pink-highlight {
-    color: rgb(240, 27, 151);
-}
-
-.date-title {
-    color: #000000;
-    text-align: center;
-}
-
-.flyer-buttons {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 1rem;
-}
-
-/* BUTTON STYLE */
-.flyer-button {
+  .pdf-link {
     display: inline-block;
-    padding: 0.8rem 1.5rem;
-    font-family: 'Black Ops One', Arial, sans-serif;
-    font-size: 1.2rem;
-    color: #000000;
-    background-color: #ffef00;
-    text-decoration: none;
+    margin-top: 1rem;
+    padding: 0.6rem 1rem;
+    border: 1px solid black;
     border-radius: 6px;
-    transition: all 0.3s ease;
-    text-align: center;
-}
+    background: white;
+    color: black;
+    text-decoration: none;
+  }
 
-.flyer-button:hover {
-    background-color: #ffffff;
-    transform: scale(1.05);
-}
-
-@media (max-width: 1000px) {
-
-    .schedule-row {
-        flex-direction: column;
-        align-items: center;
-        gap: 2rem;
-    }
-
-    .schedule-column:first-of-type { order: 1; }
-    .schedule-column:last-of-type { order: 2; }
-    .schedule-image { order: 3; }
-}
-
+  .pdf-link:hover {
+    background: #f3f3f3;
+  }
 </style>
-
 </head>
 
-<body>
+<body class="home event-page">
 
-<nav class="top-nav">
+<header class="site-header">
+  <nav class="top-nav">
     <img src="images/aa_logo.png" alt="Rebellion Dogz Logo" class="logo" />
+
     <a href="index.html">Home</a>
     <a href="our_current_event.html">Our Current Event</a>
     <a href="archive.html">Speaker Archive</a>
     <a href="open_mic.html">Open Mic Archive</a>
     <a href="contact.html">Contact</a>
-</nav>
+  </nav>
+</header>
 
-<section class="event-info">
+<main class="event-page-content">
+  <h1 class="event-title">Our Current Event</h1>
 
-    <h1 class="section-title">Event Schedule and Location<br>
-    Third Saturday of Every Month</h1>
+  <div class="pdf-wrap">
+    <iframe
+      class="pdf-frame"
+      src="generic_flier.pdf"
+      title="Current Event Flier"
+    ></iframe>
+  </div>
 
-    <h2 class="date-title">
-        Next Event: Saturday, June 20th, 2026
-    </h2>
-
-    <h2 class="date-title">
-        Location: Eastpark Church · 15815 NE 18th Street · Vancouver, WA
-    </h2>
-
-    <div class="schedule-wrapper">
-
-        <div class="schedule-row">
-
-            <!-- LEFT COLUMN -->
-            <div class="schedule-column">
-                <div class="schedule-time">
-                    5:30 PM – 6:30 PM
-                </div>
-
-                <div class="schedule-title">
-                    Open Mic/No Talent Show/YouTube Karaoke
-                </div>
-
-                <div class="schedule-note">
-                    This is a FREE event. Beverage Sales available, free coffee and water, and a
-                    <span class="pink-highlight">DESSERT POT LUCK</span>.
-                    Please bring an item to share if you can. Anything left over will be donated to COUVE COLLECTIVE, a recovery cafe in Vancouver.
-                </div>
-
-                <div class="schedule-details">
-                    Sign up for a 5 minute slot anytime after 5 pm.<br>
-                    A guitar, amps, and microphones available for use.
-                </div>
-
-                <div class="schedule-note">
-                    Open Mic hosted by<br>
-                    Secular Sobriety of Clark County WA
-                </div>
-            </div>
-
-            <!-- MIDDLE COLUMN -->
-            <div class="schedule-column">
-                <div class="schedule-time">
-                    7:00 PM – 8:15 PM
-                </div>
-
-                <div class="schedule-title">
-                    AA Speaker Meeting
-                </div>
-
-                <div class="schedule-details">
-                    15 Minute Speaker:<br> 
-                    Ethan .<br>
-                    from Battle Ground, WA<br><br>
-                    <br>
-                    Long Speaker:<br>
-                    Kelly H.<br>
-                    from Battle Ground, CA
-                </div>
-
-                <img src="images/No_ADW.png" alt="No Alcohol Drugs or Weapons Notice" class="secondary-image">
-            </div>
-
-            <!-- RIGHT IMAGE / FLYERS -->
-            <div class="schedule-image">
-                <img src="images/winston_suit.png" alt="Winston in Suit">
-
-                <div class="flyer-buttons">
-                    <a href="images/generic_flier.pdf" target="_blank" class="flyer-button">
-                        Click Here for Our Flier
-                    </a>
-
-                                  </div>
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
+  <a class="pdf-link" href="generic_flier.pdf" target="_blank" rel="noopener">
+    Open PDF
+  </a>
+</main>
 
 </body>
 </html>
